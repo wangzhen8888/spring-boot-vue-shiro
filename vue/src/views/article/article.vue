@@ -16,6 +16,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
+      
       <el-table-column align="center" label="创建时间" width="170">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
