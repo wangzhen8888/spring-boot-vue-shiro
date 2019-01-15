@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <classPathEntry
+
             location="/Users/yehaixiao/Maven/mysql/mysql-connector-java/5.1.30/mysql-connector-java.jar"/>
     <context id="my" targetRuntime="MyBatis3">
         <commentGenerator>
