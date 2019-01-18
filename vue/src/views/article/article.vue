@@ -16,7 +16,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
-      
+
       <el-table-column align="center" label="创建时间" width="170">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
@@ -59,7 +59,7 @@
       return {
         totalCount: 0, //分页组件--数据总条数
         list: [],//表格的数据
-        listLoading: false,//数据加载等待动画
+        listLoadinglistLoading: false,//数据加载等待动画
         listQuery: {
           pageNum: 1,//页码
           pageRow: 50,//每页条数
@@ -135,6 +135,11 @@
           this.dialogFormVisible = false
         })
       },
+       handleFilter() {
+        //查询事件
+        this.listQuery.pageNum = 1
+        this.getList()
+      },
       updateArticle() {
         //修改文章
         this.api({
@@ -142,6 +147,7 @@
           method: "post",
           data: this.tempArticle
         }).then(() => {
+        
           this.getList();
           this.dialogFormVisible = false
         })
