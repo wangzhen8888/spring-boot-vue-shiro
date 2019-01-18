@@ -56,14 +56,14 @@ export const asyncRouterMap = [{
         menu: 'article'
       },
       {
-        path: 'shetuan',
-        name: '测试',
-        component: _import('article/shetuan'),
+        path: 'association',
+        name: '社团列表',
+        component: _import('association/association'),
         meta: {
-          title: '测试',
+          title: '社团列表',
           icon: 'example'
         },
-        menu: 'shetuan'
+        menu: 'association'
 
       },
     ]
