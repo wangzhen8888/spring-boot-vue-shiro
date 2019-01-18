@@ -50,7 +50,7 @@ public class ArticleController {
      * 修改文章
      *
      * @param requestJson
-     * @return                                nnn
+     * @return
      */
     @RequiresPermissions("article:update")
     @PostMapping("/updateArticle")

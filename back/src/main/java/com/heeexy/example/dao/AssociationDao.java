@@ -26,12 +26,13 @@ public interface AssociationDao {
      * @return
      */
     List<JSONObject> listAssociation(JSONObject jsonObject);
+    /**
+     * 查询社团数量
+     * @param jsonObject
+     * @return
+     */
+    int countAssociation(JSONObject jsonObject);
 
-    int insertSelective(JSONObject jsonObject);
+    int updateAssociation(JSONObject jsonObject);
 
-    JSONObject selectByPrimaryKey(JSONObject jsonObject);
-
-    int updateByPrimaryKeySelective(JSONObject jsonObject);
-
-    int updateByPrimaryKey(JSONObject jsonObject);
 }

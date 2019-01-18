@@ -25,7 +25,7 @@ public class AssociationController {
  * @param requestJson
  * @return
  */
-    @RequiresPermissions("shetuan:add")
+    @RequiresPermissions("association:add")
     @PostMapping("/addAssociation")
     public JSONObject addAssociation(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "name,details");
@@ -37,10 +37,21 @@ public class AssociationController {
      * @param request
      * @return
      */
-    @RequiresPermissions("shetuan:list")
+    @RequiresPermissions("association:list")
     @GetMapping("/listAssociation")
     public JSONObject listAssociation(HttpServletRequest request) {
         return associationService.listAssociation(CommonUtil.request2Json(request));
+    }
+    /**
+     * 更新社团基本信息
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("association:list")
+    @PostMapping("/updateAssociation")
+    public  JSONObject updateAssociation(@RequestBody JSONObject requestJson){
+        CommonUtil.hasAllRequired(requestJson,"id,name,details" );
+        return associationService.updateAssociation(requestJson);
     }
 
 }

@@ -21,11 +21,18 @@
     SELECT
     w.id id,
     w.name name,
-    w.details details
+    w.details details,
     date_format(w.create_time, '%Y.%m.%d %T') createTime
     FROM association w
     WHERE w.delete_status = '1'
     ORDER BY w.id DESC
     LIMIT #{offSet}, #{pageRow}
   </select>
+  <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject">
+    UPDATE association
+    SET
+    name=#{name},
+    details=#{details}
+    WHERE id = #{id}
+  </update>
 </mapper>

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class AssociationServiceImpl implements AssociationService {
@@ -23,7 +25,34 @@ public class AssociationServiceImpl implements AssociationService {
      */
     @Override
     public JSONObject listAssociation(JSONObject jsonObject) {
-        return null;
+
+        CommonUtil.fillPageParam(jsonObject);
+        int count = associationDao.countAssociation(jsonObject);
+        List<JSONObject> list = associationDao.listAssociation(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
+
+    /**
+     * 更新社团基本信息
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject updateAssociation(JSONObject jsonObject) {
+
+        JSONObject json= new JSONObject();
+try {
+
+            associationDao.updateAssociation(jsonObject);
+            json.put("msg","更新社团信息成功");
+        } catch (Exception e) {
+            json.put("msg","更新社团信息失败，请稍后重试");
+            e.printStackTrace();
+        }
+
+        return  CommonUtil.successJson(json);
+
+
     }
 
     /**
