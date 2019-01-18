@@ -10,4 +10,11 @@ public interface AssociationService {
      * @return
      */
     JSONObject addAssociation(JSONObject jsonObject);
+    /**
+     * 社团列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject listAssociation(JSONObject jsonObject);
 }

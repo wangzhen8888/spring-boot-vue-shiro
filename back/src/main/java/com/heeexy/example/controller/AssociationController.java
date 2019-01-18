@@ -5,10 +5,9 @@ import com.heeexy.example.service.AssociationService;
 import com.heeexy.example.util.CommonUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: 徐敏杰
@@ -32,4 +31,16 @@ public class AssociationController {
         CommonUtil.hasAllRequired(requestJson, "name,details");
         return associationService.addAssociation(requestJson);
     }
+    /**
+     * 查询社团列表
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("shetuan:list")
+    @GetMapping("/listAssociation")
+    public JSONObject listAssociation(HttpServletRequest request) {
+        return associationService.listAssociation(CommonUtil.request2Json(request));
+    }
+
 }

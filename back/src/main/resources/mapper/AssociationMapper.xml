@@ -12,47 +12,20 @@
     values ( #{name}, #{details}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.alibaba.fastjson.JSONObject">
-    insert into association
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="details != null">
-        details,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="details != null">
-        #{details,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.alibaba.fastjson.JSONObject">
-    update association
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="details != null">
-        details = #{details,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.alibaba.fastjson.JSONObject">
-    update association
-    set name = #{name,jdbcType=VARCHAR},
-      details = #{details,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="countAssociation" resultType="Integer">
+    SELECT count(0)
+    FROM association a
+    WHERE a.delete_status = '1'
+  </select>
+  <select id="listAssociation" resultType="com.alibaba.fastjson.JSONObject">
+    SELECT
+    w.id id,
+    w.name name,
+    w.details details
+    date_format(w.create_time, '%Y.%m.%d %T') createTime
+    FROM association w
+    WHERE w.delete_status = '1'
+    ORDER BY w.id DESC
+    LIMIT #{offSet}, #{pageRow}
+  </select>
 </mapper>
