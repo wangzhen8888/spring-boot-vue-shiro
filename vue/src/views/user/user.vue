@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-form>
         <el-form-item>
-          <el-button type="primary" icon="plus" v-if="hasPerm('user:add')" @click="showCreate">添加
+          <el-button type="primary" icon="plus" v-if="hasPerm('user:add')" @click="showCreate">添加新用户
           </el-button>
         </el-form-item>
       </el-form>
