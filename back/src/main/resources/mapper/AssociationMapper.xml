@@ -7,24 +7,25 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
-    insert into association ( name, details
+    insert into association ( name, details,simple_detail
       )
-    values ( #{name}, #{details}
+    values ( #{name}, #{details},#{simple_detail}
       )
   </insert>
   <select id="countAssociation" resultType="Integer">
     SELECT count(0)
     FROM association a
-    WHERE a.delete_status = '1'
+    WHERE a.delete_status = '1' AND a.is_open='1'
   </select>
   <select id="listAssociation" resultType="com.alibaba.fastjson.JSONObject">
     SELECT
     w.id id,
     w.name name,
     w.details details,
+    w.simple_detail simple_detail,
     date_format(w.create_time, '%Y.%m.%d %T') createTime
     FROM association w
-    WHERE w.delete_status = '1'
+    WHERE w.delete_status = '1' AND w.is_open='1'
     ORDER BY w.id DESC
     LIMIT #{offSet}, #{pageRow}
   </select>
@@ -32,7 +33,9 @@
     UPDATE association
     SET
     name=#{name},
-    details=#{details}
+    details=#{details},
+    simple_detail=#{simple_detail},
+    delete_status=#{delete_status}
     WHERE id = #{id}
   </update>
 </mapper>

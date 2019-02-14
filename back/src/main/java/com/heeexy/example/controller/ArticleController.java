@@ -6,8 +6,10 @@ import com.heeexy.example.util.CommonUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Scanner;
 
 /**
  * @author: hxy
@@ -57,5 +59,24 @@ public class ArticleController {
     public JSONObject updateArticle(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "id,content");
         return articleService.updateArticle(requestJson);
+    }
+@Test
+    public void test10(){
+        Scanner sc=new Scanner(System.in);
+        System.out.println("请输入一个奇数：");
+        int a=sc.nextInt();
+        int num=(a/2)+1;
+        int[] b=new int[num];//存放需要打印的数据
+        b[0]=a;//第1个值
+        for(int i=1;i<num;i++){
+            b[i]=(int) (b[i-1]+b[i-1]-Math.pow(2, i));
+
+        }
+        for(int i=0;i<num;i++){
+
+            System.out.print(b[i]+" ");//打印
+        }
+        System.out.println(1111111111);
+
     }
 }
