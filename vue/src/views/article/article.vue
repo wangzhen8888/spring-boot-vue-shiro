@@ -58,11 +58,14 @@
     data() {
       return {
         totalCount: 0, //分页组件--数据总条数
+
+
+        
         list: [],//表格的数据
         listLoadinglistLoading: false,//数据加载等待动画
         listQuery: {
           pageNum: 1,//页码
-          pageRow: 50,//每页条数
+          pageRow: 10,//每页条数
           name: ''
         },
         dialogStatus: 'create',
@@ -70,6 +73,8 @@
         textMap: {
           update: '编辑',
           create: '创建文章'
+
+
         },
         tempArticle: {
           id: "",

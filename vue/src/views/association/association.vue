@@ -43,7 +43,7 @@
             icon="info"
             size="mini"
             v-if="hasPerm('association:delete') "
-            @click="removeAssociation(scope.$index)"
+            @click="showDetail(scope.$index)"
           >详情</el-button>
           <el-button
             type="danger"
@@ -75,14 +75,15 @@
         style="width: 300px; margin-left:80px;"
       >
         <el-form-item label="社团名称">
-          <el-input type="text" v-model="association.name"></el-input>
+          <el-input type="text" v-model="association.name" :disabled="dialogFormVisible1"></el-input>
         </el-form-item>
          <el-form-item label="社团简介">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入内容"
-            v-model="association.simple_detail"
+            v-model="association.simple_detail" 
+            :disabled="dialogFormVisible1"
           ></el-input>
         </el-form-item>
         <el-form-item label="社团详情">
@@ -91,6 +92,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入内容"
             v-model="association.details"
+            :disabled="dialogFormVisible1"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -100,6 +102,7 @@
         <el-button type="primary" v-else @click="toUpdate">修 改</el-button>
       </div>
     </el-dialog>
+   
   </div>
 </template>
 <script>
@@ -115,6 +118,7 @@ export default {
         name: ""
       },
       dialogFormVisible: false,
+      dialogFormVisible1:false,
       association: {
         id: "",
         name: "",
@@ -170,7 +174,6 @@ export default {
       });
     },
     showUpdate($index) {
-      console.log(this.list[$index])
       //显示修改对话框
       this.association.id = this.list[$index].id;
       this.association.name = this.list[$index].name;
@@ -227,7 +230,35 @@ export default {
           this.getList();
           this.dialogFormVisible = false;
         });
+    },
+    removeAssociation(index){
+      this.$confirm("请确认信息？", "确认删除", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "删除",
+        cancelButtonText: "取消"
+      }).then(()=> {
+        this.list[index].delete_status=2;
+        this.association=JSON.parse(JSON.stringify(this.list[index]));
+        console.log(this.association)
+         this.updateAssociation();
+        }) 
+        .catch(action => {
+          this.getList();
+        });
+  
+
+
+    },
+    showDetail($index){
+      this.association.id = this.list[$index].id;
+      this.association.name = this.list[$index].name;
+      this.association.details = this.list[$index].details;
+      this.association.simple_detail = this.list[$index].simple_detail;
+      this.dialogFormVisible=true
+this.dialogFormVisible1=true
     }
+  
+
   }
 };
 </script>
