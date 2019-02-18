@@ -66,7 +66,7 @@
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :show-close="false">
       <el-form
         class="small-space"
         :model="association"
@@ -95,11 +95,34 @@
             :disabled="dialogFormVisible1"
           ></el-input>
         </el-form-item>
+        <el-form-item v-show="dialogFormVisible1" label="创建时间">
+           <el-input type="text" v-model="association.create_time" :disabled="dialogFormVisible1"></el-input>
+          <!-- <template slot-scope="scope">
+          <span>{{association.create_time}}</span>
+        </template> -->
+        </el-form-item>
+         <el-form-item v-show="dialogFormVisible1" label="更新时间">
+           <el-input type="text" v-model="association.update_time" :disabled="dialogFormVisible1"></el-input>
+          <!-- <template slot-scope="scope">
+          <span>{{association.create_time}}</span>
+        </template> -->
+        </el-form-item>
+        <el-form-item v-show="!dialogFormVisible1" label="选择社长">
+      <el-select v-model="value9" :change="changeAdmin()"  filterable placeholder="请选择">
+    <el-option
+      v-for="item in userList"
+      :key="item.id"
+      :label="item.username"
+      :value="item.userId">
+    </el-option>
+  </el-select>
+
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false,dialogFormVisible1=false">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="success" @click="createAssociation">创 建</el-button>
-        <el-button type="primary" v-else @click="toUpdate">修 改</el-button>
+        <el-button type="primary" v-else-if="dialogStatus=='update'" @click="toUpdate">修 改</el-button>
       </div>
     </el-dialog>
    
@@ -123,19 +146,32 @@ export default {
         id: "",
         name: "",
         details: "",
-        simple_detail: ""
+        simple_detail: "",
+        create_time:"",
+        delete_status:"",
+        update_time:"",
+        user_id:1,
+        is_open:null
+
       },
+      value9:"",
       textMap: {
+        detail:"详情",
         update: "编辑",
         create: "创建社团"
       },
-      dialogStatus: "create"
+      dialogStatus: "create",
+      userList:[],
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    changeAdmin(){
+this.association.user_id=this.value9;
+
+    },
     getList() {
       //查询社团列表
       if (!this.hasPerm("association:list")) {
@@ -179,15 +215,50 @@ export default {
       this.association.name = this.list[$index].name;
       this.association.details = this.list[$index].details;
       this.association.simple_detail = this.list[$index].simple_detail;
+      this.association.delete_status=this.list[$index].delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+      this.value9=this.list[$index].user_id;
+      
+      
+     
+      // this.checkedUser=this.list[$index].user_id;
+     
+     //获取用户列表，用于选择社长
+     this.api(
+       {
+        url: "/user/list",
+        method: "get",
+       }
+     ).then(result=>{
+       
+       this.userList=result.list;
+     
+     })
     },
     updateAssociation() {
+      console.log(this.association)
       //修改社团信息
       this.api({
         url: "/association/updateAssociation",
         method: "post",
         data: this.association
+      }).then(result => {
+        this.$message({
+          type: "info",
+          message: result.msg
+        });
+        this.getList();
+        this.dialogFormVisible = false;
+      });
+    },
+    toRemoveAssociation(asMsg) {
+
+      //删除社团
+      this.api({
+        url: "/association/updateAssociation",
+        method: "post",
+        data: asMsg
       }).then(result => {
         this.$message({
           type: "info",
@@ -229,6 +300,7 @@ export default {
         .catch(action => {
           this.getList();
           this.dialogFormVisible = false;
+          this.dialogFormVisible1 = false;
         });
     },
     removeAssociation(index){
@@ -238,9 +310,9 @@ export default {
         cancelButtonText: "取消"
       }).then(()=> {
         this.list[index].delete_status=2;
-        this.association=JSON.parse(JSON.stringify(this.list[index]));
-        console.log(this.association)
-         this.updateAssociation();
+        let copy={};
+       copy=JSON.parse(JSON.stringify(this.list[index]));
+       this.toRemoveAssociation(copy);
         }) 
         .catch(action => {
           this.getList();
@@ -250,12 +322,16 @@ export default {
 
     },
     showDetail($index){
+      console.log(this.list[$index].createTime)
       this.association.id = this.list[$index].id;
       this.association.name = this.list[$index].name;
       this.association.details = this.list[$index].details;
       this.association.simple_detail = this.list[$index].simple_detail;
-      this.dialogFormVisible=true
-this.dialogFormVisible1=true
+      this.association.create_time=this.list[$index].create_time;
+      this.association.update_time=this.list[$index].update_time;
+      this.dialogStatus ="detail"
+      this.dialogFormVisible=true;
+      this.dialogFormVisible1=true;
     }
   
 
