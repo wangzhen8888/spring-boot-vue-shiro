@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
         CommonUtil.fillPageParam(jsonObject);
         int count = userDao.countUser(jsonObject);
         List<JSONObject> list = userDao.listUser(jsonObject);
+        System.out.println(list);
         return CommonUtil.successPage(jsonObject, list, count);
     }
 

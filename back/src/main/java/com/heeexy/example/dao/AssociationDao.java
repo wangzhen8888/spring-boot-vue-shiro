@@ -32,7 +32,20 @@ public interface AssociationDao {
      * @return
      */
     int countAssociation(JSONObject jsonObject);
-
+    /**
+     * 更新社团信息
+     * @param jsonObject
+     * @return
+     */
     int updateAssociation(JSONObject jsonObject);
+
+
+    /**
+     * 更新社长信息
+     * @param jsonObject
+     * @return
+     */
+    int updateAssUser(JSONObject jsonObject);
+
 
 }

@@ -60,7 +60,7 @@ public class ArticleController {
         CommonUtil.hasAllRequired(requestJson, "id,content");
         return articleService.updateArticle(requestJson);
     }
-@Test
+/*@Test
     public void test10(){
         Scanner sc=new Scanner(System.in);
         System.out.println("请输入一个奇数：");
@@ -78,5 +78,5 @@ public class ArticleController {
         }
         System.out.println(1111111111);
 
-    }
+    }*/
 }

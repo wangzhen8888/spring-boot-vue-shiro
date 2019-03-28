@@ -50,7 +50,8 @@ public class AssociationController {
     @RequiresPermissions("association:list")
     @PostMapping("/updateAssociation")
     public  JSONObject updateAssociation(@RequestBody JSONObject requestJson){
-        CommonUtil.hasAllRequired(requestJson,"id,name,details" );
+
+        CommonUtil.hasAllRequired(requestJson,"name, details,simple_detail,user_id" );
         return associationService.updateAssociation(requestJson);
     }
 

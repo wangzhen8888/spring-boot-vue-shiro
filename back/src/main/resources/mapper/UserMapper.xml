@@ -34,6 +34,8 @@
                      username                                username,
                      nickname                                nickname,
                      role_id                                 roleId,
+                     stu_num                                 stuNum,
+                     class                                   class,
                      delete_status                           deleteStatus,
                      DATE_FORMAT(create_time, '%Y.%m.%d %T') createTime,
                      DATE_FORMAT(update_time, '%Y.%m.%d %T') updateTime
@@ -146,8 +148,8 @@
             <id column="userId" property="userId"/>
         </collection>
         <collection property="permissionIds" ofType="Integer">
-            <id column="permissionId" property="permissionId"/>
-        </collection>
+        <id column="permissionId" property="permissionId"/>
+    </collection>
     </resultMap>
     <select id="getRoleAllInfo" resultMap="aRole">
         SELECT

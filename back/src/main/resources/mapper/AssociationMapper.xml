@@ -7,9 +7,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
-    insert into association ( name, details,simple_detail
+    insert into association ( name, details,simple_detail,user_id
       )
-    values ( #{name}, #{details},#{simple_detail}
+    values ( #{name}, #{details},#{simple_detail},#{user_id}
       )
   </insert>
   <select id="countAssociation" resultType="Integer">
@@ -19,23 +19,29 @@
   </select>
   <select id="listAssociation" resultType="com.alibaba.fastjson.JSONObject">
     SELECT
-    w.id id,
-    w.name name,
-    w.details details,
-    w.simple_detail simple_detail,
-    date_format(w.create_time, '%Y.%m.%d %T') createTime
+       w.id ,w.name,w.details,w.activity_id,w.user_id,
+       date_format(w.create_time, '%Y.%m.%d %T') create_time,
+       date_format(w.update_time, '%Y.%m.%d %T') update_time,
+       w.simple_detail,w.is_open,w.delete_status
+
     FROM association w
-    WHERE w.delete_status = '1' AND w.is_open='1'
+    WHERE w.delete_status = 1 AND w.is_open=1
     ORDER BY w.id DESC
     LIMIT #{offSet}, #{pageRow}
   </select>
+  <!--更新社团信息-->
   <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject">
     UPDATE association
     SET
     name=#{name},
     details=#{details},
     simple_detail=#{simple_detail},
-    delete_status=#{delete_status}
+    delete_status=#{delete_status},
+    user_id=#{user_id}
     WHERE id = #{id}
   </update>
+  <insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >
+    INSERT INTO ass_users (user_id,assocation_id,is_accept,user_type)
+    VALUE (#{user_id},#{id},#{is_accept},#{user_type})
+  </insert>
 </mapper>
