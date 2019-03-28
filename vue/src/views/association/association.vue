@@ -52,6 +52,7 @@
             v-if="hasPerm('association:delete') "
             @click="removeAssociation(scope.$index)"
           >删除</el-button>
+          
           <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.$index)">修改</el-button>
         </template>
       </el-table-column>
@@ -72,7 +73,7 @@
         :model="association"
         label-position="left"
         label-width="70px"
-        style="width: 300px; margin-left:80px;"
+        style="width: 400px; margin-left:80px;"
       >
         <el-form-item label="社团名称">
           <el-input type="text" v-model="association.name" :disabled="dialogFormVisible1"></el-input>
@@ -95,6 +96,7 @@
             :disabled="dialogFormVisible1"
           ></el-input>
         </el-form-item>
+         
         <el-form-item v-show="dialogFormVisible1" label="创建时间">
            <el-input type="text" v-model="association.create_time" :disabled="dialogFormVisible1"></el-input>
           <!-- <template slot-scope="scope">
@@ -107,16 +109,22 @@
           <span>{{association.create_time}}</span>
         </template> -->
         </el-form-item>
+         <el-form-item v-show="dialogFormVisible1" label="社长">
+           <el-input type="text" v-model="value9" :disabled="dialogFormVisible1"></el-input>
+          </el-form-item>
         <el-form-item v-show="!dialogFormVisible1" label="选择社长">
-      <el-select v-model="value9" :change="changeAdmin()"  filterable placeholder="请选择">
+       
+
+    <el-select v-model="value9" :change="changeAdmin()"  filterable placeholder="请选择">
     <el-option
       v-for="item in userList"
       :key="item.id"
       :label="item.username"
-      :value="item.userId">
+      :value="item.userId"
+      :disabled="dialogFormVisible1">
     </el-option>
   </el-select>
-
+      <el-button type="warning" style="margin-left:22px" @click="showAdminList()">选择社长</el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -125,7 +133,44 @@
         <el-button type="primary" v-else-if="dialogStatus=='update'" @click="toUpdate">修 改</el-button>
       </div>
     </el-dialog>
-   
+
+
+    <!-- 选择社长的弹窗 -->
+
+ <el-dialog
+  title="详情"
+  :visible.sync="detailDialogVisible"
+  width="60%"
+  :before-close="handleClose">
+  <el-table
+    :data="userList"
+    style="width: 100%">
+    <el-table-column
+      label="ID"
+      prop="userId">
+    </el-table-column>
+    <el-table-column
+      label="Name"
+      prop="username">
+    </el-table-column>
+    <el-table-column
+      align="right">
+      
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+    <el-button @click="detailDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="detailDialogVisible = false">确 定</el-button>
+  </span>
+</el-dialog> 
   </div>
 </template>
 <script>
@@ -140,8 +185,10 @@ export default {
         pageRow: 10, //每页条数
         name: ""
       },
+      search: '',
       dialogFormVisible: false,
       dialogFormVisible1:false,
+      detailDialogVisible:false,
       association: {
         id: "",
         name: "",
@@ -168,6 +215,24 @@ export default {
     this.getList();
   },
   methods: {
+    handleEdit(index, row) {
+        console.log(index, row);
+      },
+      handleDelete(index, row) {
+        console.log(index, row);
+      },
+     handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+      showAdminList(){
+this.detailDialogVisible=true
+
+      }
+      ,
     changeAdmin(){
 this.association.user_id=this.value9;
 
@@ -190,12 +255,15 @@ this.association.user_id=this.value9;
       });
     },
     showCreate() {
+      this.getUserList();
       //显示新增对话框
       this.association.name = "";
       this.association.details = "";
       this.association.simple_detail = "";
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      
+      console.log("执行了获取用户列表");
     },
     createAssociation() {
       console.log(this.association);
@@ -220,11 +288,15 @@ this.association.user_id=this.value9;
       this.dialogFormVisible = true;
       this.value9=this.list[$index].user_id;
       
-      
+      this.getUserList();
      
       // this.checkedUser=this.list[$index].user_id;
      
-     //获取用户列表，用于选择社长
+    
+    },
+    //获取用户列表
+    getUserList(){
+ //获取用户列表，用于选择社长
      this.api(
        {
         url: "/user/list",
@@ -233,7 +305,7 @@ this.association.user_id=this.value9;
      ).then(result=>{
        
        this.userList=result.list;
-     
+     console.log(this.userList)
      })
     },
     updateAssociation() {
@@ -322,7 +394,6 @@ this.association.user_id=this.value9;
 
     },
     showDetail($index){
-      console.log(this.list[$index].createTime)
       this.association.id = this.list[$index].id;
       this.association.name = this.list[$index].name;
       this.association.details = this.list[$index].details;
