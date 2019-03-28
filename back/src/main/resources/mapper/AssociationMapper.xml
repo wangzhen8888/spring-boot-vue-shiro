@@ -40,4 +40,8 @@
     user_id=#{user_id}
     WHERE id = #{id}
   </update>
+  <insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >
+    INSERT INTO ass_users (user_id,assocation_id,is_accept,user_type)
+    VALUE (#{user_id},#{id},#{is_accept},#{user_type})
+  </insert>
 </mapper>

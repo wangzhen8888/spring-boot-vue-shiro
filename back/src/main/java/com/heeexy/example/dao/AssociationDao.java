@@ -39,4 +39,13 @@ public interface AssociationDao {
      */
     int updateAssociation(JSONObject jsonObject);
 
+
+    /**
+     * 更新社长信息
+     * @param jsonObject
+     * @return
+     */
+    int updateAssUser(JSONObject jsonObject);
+
+
 }

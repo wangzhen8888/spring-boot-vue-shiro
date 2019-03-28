@@ -9,14 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
 @Service
 public class AssociationServiceImpl implements AssociationService {
 
-    @Autowired
+    @Resource
     private AssociationDao associationDao;
+
     @Transactional(rollbackFor = Exception.class)
     /**
      * 查询社团列表
@@ -44,6 +46,10 @@ public class AssociationServiceImpl implements AssociationService {
 try {
 
             associationDao.updateAssociation(jsonObject);
+            jsonObject.put("is_accept",1);
+            jsonObject.put("user_type",1);
+            associationDao.updateAssUser(jsonObject);
+
             json.put("msg","更新社团信息成功");
         } catch (Exception e) {
             json.put("msg","更新社团信息失败，请稍后重试");
