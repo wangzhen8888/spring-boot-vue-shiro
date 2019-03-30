@@ -55,17 +55,17 @@ export const asyncRouterMap = [{
         },
         menu: 'article'
       },
-      {
-        path: 'association',
-        name: '社团列表',
-        component: _import('association/association'),
-        meta: {
-          title: '社团列表',
-          icon: 'example'
-        },
-        menu: 'association'
+      // {
+      //   path: 'association',
+      //   name: '社团列表',
+      //   component: _import('association/association'),
+      //   meta: {
+      //     title: '社团列表',
+      //     icon: 'example'
+      //   },
+      //   menu: 'association'
 
-      },
+      // },
     ]
   },
   {
