@@ -109,7 +109,7 @@
       <el-form
         class="small-space"
         :model="tempUser"
-        label-position="left"
+        label-position="left"  
         label-width="80px"
         style="width: 300px; margin-left:50px;"
       >
