@@ -11,6 +11,12 @@
                 v-if="hasPerm('user:add')"
                 @click="showCreate"
               >添加新用户</el-button>
+              <el-button
+                type="primary"
+                icon="plus"
+                v-if="hasPerm('user:add')"
+                @click="getList()"
+              >查询</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -62,19 +68,20 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="序号" width="80">
+      <el-table-column align="center" label="序号" width="35">
         <template slot-scope="scope">
           <span v-text="getIndex(scope.$index)"></span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="昵称" prop="nickname" style="width: 60px;"></el-table-column>
-      <el-table-column align="center" label="用户名" prop="username" style="width: 60px;"></el-table-column>
-      <el-table-column align="center" label="角色" width="100">
+      <el-table-column align="center" label="姓名" prop="nickname" width="80"></el-table-column>
+      <el-table-column align="center" label="用户名" prop="username" width="150"></el-table-column>
+      <el-table-column align="center" label="角色类型" width="120px">
         <template slot-scope="scope">
           <el-tag type="success" v-text="scope.row.roleName" v-if="scope.row.roleId===1"></el-tag>
           <el-tag type="primary" v-text="scope.row.roleName" v-else></el-tag>
         </template>
       </el-table-column>
+       <el-table-column align="center" label="班级" prop="class" width="170"></el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="170"></el-table-column>
       <el-table-column align="center" label="最近修改时间" prop="updateTime" width="170"></el-table-column>
       <el-table-column align="center" label="管理" width="220" v-if="hasPerm('user:update')">
@@ -102,7 +109,7 @@
       <el-form
         class="small-space"
         :model="tempUser"
-        label-position="left"
+        label-position="left"  
         label-width="80px"
         style="width: 300px; margin-left:50px;"
       >
@@ -149,6 +156,7 @@ export default {
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
       listQuery: {
+        stuNum:"",  
         pageNum: 1, //页码
         pageRow: 50 //每页条数
       },
@@ -219,9 +227,13 @@ export default {
           this.$message({
             message: "操作成功",
             type: "success",
+             duration: 1500,
             onClose: () => {
+              console.log("执行了上传");
               this.visible = false;
               this.$emit("refreshDataList");
+              this.$refs.upload.clearFiles();
+              this.fileName=""
             }
           });
 
@@ -236,6 +248,7 @@ export default {
       });
     },
     getList() {
+      console.log(this.listQuery)
       //查询列表
       this.listLoading = true;
       this.api({
@@ -244,6 +257,7 @@ export default {
         params: this.listQuery
       }).then(data => {
         this.listLoading = false;
+        console.log(data.list);
         this.list = data.list;
         this.totalCount = data.totalCount;
       });
