@@ -177,6 +177,7 @@ public class UserServiceImpl implements UserService {
         if (exist > 0) {
             return CommonUtil.errorJson(ErrorEnum.E_10009);
         }
+
         userDao.addUser(jsonObject);
         return CommonUtil.successJson();
     }
