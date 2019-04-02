@@ -1,6 +1,8 @@
 package com.heeexy.example.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.heeexy.example.response.BusinessException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author: hxy
@@ -15,6 +17,15 @@ public interface UserService {
      * @return
      */
     JSONObject listUser(JSONObject jsonObject);
+    /**
+     * 解析Excel
+     * 通过excel导入用户
+     * @param file 文件
+     * @return 得到的结果
+     *
+     */
+    JSONObject importUser(MultipartFile file);
+
 
     /**
      * 查询所有的角色

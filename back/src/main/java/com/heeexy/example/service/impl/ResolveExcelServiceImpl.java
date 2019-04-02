@@ -1,9 +1,13 @@
 package com.heeexy.example.service.impl;
 
+
+import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.entity.ReqImportClient;
 import com.heeexy.example.response.BusinessException;
 import com.heeexy.example.response.ReturnCode;
 import com.heeexy.example.service.ResolveExcelService;
+import com.heeexy.example.util.CommonUtil;
+import com.heeexy.example.util.constants.ErrorEnum;
 import com.xiaoleilu.hutool.log.Log;
 import com.xiaoleilu.hutool.log.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -45,14 +51,20 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
     /**
      * 密码长度
      */
-    public static final int passWardLength = 6;
+    public static final int StuNumWardLength = 12;
 
     @Override
-    public List<ReqImportClient> resolveExcel(MultipartFile file) throws BusinessException {
+    public JSONObject resolveExcel(MultipartFile file) throws BusinessException {
+        List<ReqImportClient> list=new ArrayList<>();
+        Map<String,Object> resultMap=new HashMap<String,Object>();
+        JSONObject json=new JSONObject();
+        resultMap.put("rtnCode","0");
+        resultMap.put("rtnMsg","成功");
 
-        List<ReqImportClient> list = new ArrayList<>();
         if (file == null) {
-            throw new BusinessException(ReturnCode.CODE_FAIL, "对象不能为空");
+
+            resultMap.put("rtnCode","-1");
+            resultMap.put("rtnMsg","失败");
         }
         //获取名字
         String originalFilename = file.getOriginalFilename();
@@ -66,11 +78,12 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
         } catch (Exception e) {
             logger.info(originalFilename);
             e.printStackTrace();
-            throw new BusinessException(ReturnCode.CODE_FAIL, "格式错误");
+            resultMap.put("rtnCode","-1");
+            resultMap.put("rtnMsg","失败");
         }
         if (workbook == null) {
             logger.info(originalFilename);
-            throw new BusinessException(ReturnCode.CODE_FAIL, "格式错误");
+            return CommonUtil.errorJson(ErrorEnum.UPLOAD_ERR_OK);
         } else {
             //获取所有的工作表的的数量
             int numOfSheet = workbook.getNumberOfSheets();
@@ -90,7 +103,7 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
                         //todo 正则比对
                         boolean matche = Pattern.matches(PHONE_NUMBER_REG, longName);
                         if (!matche) {
-                            throw new BusinessException(ReturnCode.CODE_FAIL, "电话格式错误");
+                            return CommonUtil.errorJson(ErrorEnum.UPLOAD_ERR_OK);
                         }
                         reqImportClient.setLoginName(longName);
                     }
@@ -98,8 +111,8 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
                     if (row.getCell(1) != null) {
                         row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
                         String passWard = row.getCell(1).getStringCellValue();
-                        if (passWard.replace("", "").length() < passWardLength) {
-                            throw new BusinessException(ReturnCode.CODE_FAIL, "密码的格式有误");
+                        if (passWard.replace("", "").length() != StuNumWardLength) {
+                            return CommonUtil.errorJson(ErrorEnum.UPLOAD_ERR_OK);
                         }
                         reqImportClient.setPassword(passWard);
                     }
@@ -107,11 +120,18 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
                     if (row.getCell(2) != null) {
                         row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
                         String userName = row.getCell(2).getStringCellValue();
+                        if(userName==null||userName==""){
+                            return CommonUtil.errorJson(ErrorEnum.UPLOAD_ERR_OK);
+                        }
                         reqImportClient.setUserName(userName);
                     }
+                    //遍历班级
                     if (row.getCell(3) != null) {
                         row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
                         String groupID = row.getCell(3).getStringCellValue();
+                        if(groupID==null||groupID==""){
+                            return CommonUtil.errorJson(ErrorEnum.UPLOAD_ERR_OK);
+                        }
                         reqImportClient.setGroupID(groupID);
                     }
                     list.add(reqImportClient);
@@ -119,7 +139,9 @@ public class ResolveExcelServiceImpl implements ResolveExcelService {
             }
         }
 
-        return list;
+        resultMap.put("listUser",list);
+
+        return CommonUtil.successJson();
 
     }
 

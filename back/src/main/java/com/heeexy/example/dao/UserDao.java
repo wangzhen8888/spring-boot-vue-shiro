@@ -52,6 +52,14 @@ public interface UserDao {
     int addUser(JSONObject jsonObject);
 
     /**
+     * 导入用户
+     *
+     * @param jsonObject
+     * @return
+     */
+    int importUser(List<JSONObject> list);
+
+    /**
      * 修改用户
      *
      * @param jsonObject

@@ -19,34 +19,40 @@
         <result column="updateTime" property="updateTime"/>
         <result column="lastLoginTime" property="lastLoginTime"/>
         <result column="deleteStatus" property="deleteStatus"/>
+        <result column="class" property="class"/>
         <collection property="permissionList" ofType="String">
             <id column="permissionName" property="permissionName"/>
         </collection>
     </resultMap>
-    <select id="listUser" resultMap="userMap">
+    <select id="listUser" resultMap="userMap" parameterType="com.alibaba.fastjson.JSONObject">
         SELECT
-            u.*,
-            r.role_name                            roleName,
-            CONCAT(p.menu_name, p.permission_name) permissionName
+        u.*,
+        r.role_name roleName,
+        CONCAT(p.menu_name, p.permission_name) permissionName
         FROM (
-                 SELECT
-                     id                                      userId,
-                     username                                username,
-                     nickname                                nickname,
-                     role_id                                 roleId,
-                     stu_num                                 stuNum,
-                     class                                   class,
-                     delete_status                           deleteStatus,
-                     DATE_FORMAT(create_time, '%Y.%m.%d %T') createTime,
-                     DATE_FORMAT(update_time, '%Y.%m.%d %T') updateTime
-                 FROM sys_user
-                 WHERE delete_status = '1'
-                 ORDER BY id
-                 LIMIT #{offSet}, #{pageRow}
-             ) u
-            LEFT JOIN sys_role r ON r.id = u.roleId
-            LEFT JOIN sys_role_permission rp ON rp.role_id = r.id
-            LEFT JOIN sys_permission p ON p.id = rp.permission_id
+        SELECT
+        id userId,
+        username username,
+        nickname nickname,
+        role_id roleId,
+        stu_num stuNum,
+        class class,
+        delete_status deleteStatus,
+        DATE_FORMAT(create_time, '%Y.%m.%d %T') createTime,
+        DATE_FORMAT(update_time, '%Y.%m.%d %T') updateTime
+        FROM sys_user
+        WHERE
+        <if test="stuNum != null and stuNum != ''">
+            username=#{stuNum} AND
+        </if>
+        delete_status = '1'
+
+        ORDER BY id
+        LIMIT #{offSet}, #{pageRow}
+        ) u
+        LEFT JOIN sys_role r ON r.id = u.roleId
+        LEFT JOIN sys_role_permission rp ON rp.role_id = r.id
+        LEFT JOIN sys_permission p ON p.id = rp.permission_id
 
         ORDER BY u.userId
     </select>
@@ -148,8 +154,8 @@
             <id column="userId" property="userId"/>
         </collection>
         <collection property="permissionIds" ofType="Integer">
-        <id column="permissionId" property="permissionId"/>
-    </collection>
+            <id column="permissionId" property="permissionId"/>
+        </collection>
     </resultMap>
     <select id="getRoleAllInfo" resultMap="aRole">
         SELECT
@@ -200,4 +206,25 @@
          WHERE username=#{username}
          AND delete_status='1';
     </select>
+    <!--批量导入-->
+    <insert id="importUser" parameterType="java.util.List">
+        insert into sys_user (id,phone, stu_num, class,username,nickname) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.stuNum},
+            #{item.phone},
+            #{item.stuNum},
+            #{item.class},
+            #{item.stuNum},
+            #{item.nickName,})
+
+        </foreach>
+
+        ON DUPLICATE KEY UPDATE
+        nickname=VALUES (nickname),
+        id=VALUES (id),
+        stu_num=VALUES (stu_num),
+        class=VALUES (class)
+    </insert>
+
+
 </mapper>

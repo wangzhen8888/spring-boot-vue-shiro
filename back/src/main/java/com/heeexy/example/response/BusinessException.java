@@ -24,4 +24,5 @@ public class BusinessException extends Exception {
     public String getErrMsg() {
         return errMsg;
     }
+
 }

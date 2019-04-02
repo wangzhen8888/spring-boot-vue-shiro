@@ -1,5 +1,6 @@
 package com.heeexy.example.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.entity.ReqImportClient;
 import com.heeexy.example.response.BusinessException;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ public interface ResolveExcelService {
      * @return 得到的结果
      * @throws BusinessException 业务异常统一处理
      */
-    List<ReqImportClient> resolveExcel(MultipartFile file) throws BusinessException;
+    JSONObject resolveExcel(MultipartFile file) throws BusinessException;
 
 
 }

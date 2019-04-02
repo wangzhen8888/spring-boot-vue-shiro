@@ -7,6 +7,7 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +32,17 @@ public class UserController {
     @GetMapping("/list")
     public JSONObject listUser(HttpServletRequest request) {
         return userService.listUser(CommonUtil.request2Json(request));
+    }
+    /**
+     * 导入账号
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("user:upload")
+    @PostMapping("/upload")
+    public JSONObject importUser(MultipartFile file) {
+        return userService.importUser(file);
     }
 
     @RequiresPermissions("user:add")
