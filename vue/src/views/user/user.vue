@@ -156,7 +156,7 @@ export default {
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
       listQuery: {
-        stuNum:"201470024130",
+        stuNum:"",
         pageNum: 1, //页码
         pageRow: 50 //每页条数
       },
