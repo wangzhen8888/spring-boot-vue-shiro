@@ -117,15 +117,9 @@
         <el-form-item v-show="!dialogFormVisible1" label="选择社长">
        
 
-    <el-select v-model="value9" :change="changeAdmin()"  filterable placeholder="请选择">
-    <el-option
-      v-for="item in userList"
-      :key="item.id"
-      :label="item.username"
-      :value="item.userId"
-      :disabled="dialogFormVisible1">
-    </el-option>
-  </el-select>
+          <el-tooltip content="" placement="top">
+          <el-button>{{tes}}</el-button>
+          </el-tooltip>
       <el-button type="warning" style="margin-left:22px" @click="showAdminList()">选择社长</el-button>
         </el-form-item>
       </el-form>
@@ -146,14 +140,21 @@
   :before-close="handleClose">
   <el-table
     :data="userList"
+    border
+      fit
+      highlight-current-row
     style="width: 100%">
     <el-table-column
       label="学号"
-      prop="stuNum">
+      prop="username">
     </el-table-column>
     <el-table-column
-      label="Name"
-      prop="username">
+      label="姓名"
+      prop="nickname">
+    </el-table-column>
+     <el-table-column
+      label="班级"
+      prop="class">
     </el-table-column>
     <el-table-column
       align="right">
@@ -169,6 +170,15 @@
       </template>
     </el-table-column>
   </el-table>
+   <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="listQuery.pageNum"
+      :page-size="listQuery.pageRow"
+      :total="totalCount"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper"
+    ></el-pagination>
     <el-button @click="detailDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="detailDialogVisible = false">确 定</el-button>
   </span>
@@ -179,7 +189,9 @@
 export default {
   data() {
     return {
-   
+      tes:"1111",
+      associationDetail:"",
+      associationName:"",
       totalCount: 0, //分页组件--数据总条数
       list: [], //表格的数据
       listLoading: false, //数据加载等待动画
@@ -239,7 +251,8 @@ export default {
           .catch(_ => {});
       },
       showAdminList(){
-this.detailDialogVisible=true
+ this.getUserList();
+        this.detailDialogVisible=true
 
       }
       ,
@@ -296,9 +309,10 @@ this.association.user_id=this.value9;
       this.association.delete_status=this.list[$index].delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-      this.value9=this.list[$index].user_id;
+      console.log(this.list[$index])
+      this.value9=this.list[$index].username;
       
-      this.getUserList();
+     
      
       // this.checkedUser=this.list[$index].user_id;
      
@@ -315,7 +329,8 @@ this.association.user_id=this.value9;
      ).then(result=>{
        
        this.userList=result.list;
-     console.log(this.userList)
+       this.totalCount = result.totalCount;
+ 
      })
     },
     updateAssociation() {
