@@ -54,8 +54,7 @@
             v-if="hasPerm('association:delete') "
             @click="removeAssociation(scope.$index)"
           >删除</el-button>
-          
-          <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.$index)">修改</el-button>
+          <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.row)">修改</el-button>
         </template>
       </el-table-column>
       <img src alt>
@@ -179,9 +178,9 @@
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
-    <el-button @click="detailDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="detailDialogVisible = false">确 定</el-button>
-  </span>
+    <!-- <el-button @click="detailDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="detailDialogVisible = false">确 定</el-button> -->
+  
 </el-dialog> 
   </div>
 </template>
@@ -189,7 +188,7 @@
 export default {
   data() {
     return {
-      tes:"1111",
+      tes:"无社长",
       associationDetail:"",
       associationName:"",
       totalCount: 0, //分页组件--数据总条数
@@ -212,8 +211,8 @@ export default {
         create_time:"",
         delete_status:"",
         update_time:"",
-        user_id:1,
-        is_open:null
+        user_id:"",
+        is_open:""
 
       },
       value9:"",
@@ -300,17 +299,46 @@ this.association.user_id=this.value9;
         this.dialogFormVisible = false;
       });
     },
-    showUpdate($index) {
+
+
+    showUpdate(s) {
+
+      console.log(s)
+      this.association.id=s.id;
+      console.log( "我是id"+this.association.id)
+      //获取当前社团的详情
+     this.api({
+        url: "/association/getAssociation",
+        method: "post",
+        data: this.association
+      }).then(res=> {
+
       //显示修改对话框
-      this.association.id = this.list[$index].id;
-      this.association.name = this.list[$index].name;
-      this.association.details = this.list[$index].details;
-      this.association.simple_detail = this.list[$index].simple_detail;
-      this.association.delete_status=this.list[$index].delete_status;
+      this.association.id = res.id;
+      this.association.name = res.name;
+      this.association.details = res.details;
+      this.association.simple_detail = res.simple_detail;
+      this.association.delete_status=res.delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-      console.log(this.list[$index])
-      this.value9=this.list[$index].username;
+     console.log(res.user_id);
+      this.tes=res.user_id;
+      
+     
+     
+      this.checkedUser=res.user_id;
+      });
+
+      // //显示修改对话框
+      // this.association.id = this.list[$index].id;
+      // this.association.name = this.list[$index].name;
+      // this.association.details = this.list[$index].details;
+      // this.association.simple_detail = this.list[$index].simple_detail;
+      // this.association.delete_status=this.list[$index].delete_status;
+      // this.dialogStatus = "update";
+      // this.dialogFormVisible = true;
+     
+      // this.value9=this.list[$index].username;
       
      
      
@@ -323,12 +351,13 @@ this.association.user_id=this.value9;
  //获取用户列表，用于选择社长
      this.api(
        {
-        url: "/user/list",
+        url: "/user/assList",
         method: "get",
        }
      ).then(result=>{
        
        this.userList=result.list;
+       console.log(result)
        this.totalCount = result.totalCount;
  
      })
