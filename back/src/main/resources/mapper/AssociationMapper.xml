@@ -6,17 +6,28 @@
     delete from association
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <!--新增社团-->
   <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
     insert into association ( name, details,simple_detail,user_id
       )
     values ( #{name}, #{details},#{simple_detail},#{user_id}
       )
   </insert>
+  <!--获取社团数量-->
   <select id="countAssociation" resultType="Integer">
     SELECT count(0)
     FROM association a
     WHERE a.delete_status = '1' AND a.is_open='1'
   </select>
+  <!--获取社团详情-->
+  <select id="getAssociation" resultType="com.alibaba.fastjson.JSONObject">
+
+    SELECT a.*,au.user_id
+    FROM association a left join ass_users au on  a.id=au.assocation_id
+    WHERE a.delete_status = 1 AND a.is_open=1 and au.delete_status=1 and au.user_type=1 and a.id=#{id}
+
+  </select>
+  <!--获取社团列表-->
   <select id="listAssociation" resultType="com.alibaba.fastjson.JSONObject">
     SELECT
        w.id ,w.name,w.details,w.activity_id,w.user_id,

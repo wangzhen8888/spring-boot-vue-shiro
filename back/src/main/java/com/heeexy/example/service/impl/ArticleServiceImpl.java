@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +31,39 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public JSONObject addArticle(JSONObject jsonObject) {
-        articleDao.addArticle(jsonObject);
+        int i=0;
+        while (i==100000){
+            articleDao.addArticle(jsonObject);
+            i++;
+        }
+
         return CommonUtil.successJson();
     }
+    /**
+     *批量新增文章
+     *
+     * @param jsonObject
+     * @return
+     */
+   @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject batchAddArticle(JSONObject jsonObject) {
+       long start = System.currentTimeMillis();
+        int i=0;
+        List<JSONObject> list=new ArrayList<>();
+        JSONObject json=new JSONObject();
+        while (i<=10000){
+            json=new JSONObject();
+            json.put("content","测试"+String.valueOf(i));
+            list.add(json);
+            i++;
+        }
 
+        articleDao.batchddArticle(list);
+       long end = System.currentTimeMillis();
+       System.out.println("批量插入10000条数据时间为---------------" + (start - end) +"秒"+ "---------------");
+        return CommonUtil.successJson();
+    }
     /**
      * 文章列表
      *

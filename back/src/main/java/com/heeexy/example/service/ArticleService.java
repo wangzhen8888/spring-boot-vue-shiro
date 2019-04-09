@@ -14,6 +14,13 @@ public interface ArticleService {
      * @return
      */
     JSONObject addArticle(JSONObject jsonObject);
+    /**
+     * 批量新增文章
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject batchAddArticle(JSONObject jsonObject);
 
     /**
      * 文章列表

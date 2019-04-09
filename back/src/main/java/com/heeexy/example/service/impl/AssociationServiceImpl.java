@@ -2,23 +2,30 @@ package com.heeexy.example.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.heeexy.example.controller.ResolveExcelController;
 import com.heeexy.example.dao.AssociationDao;
 import com.heeexy.example.service.AssociationService;
 import com.heeexy.example.util.CommonUtil;
+import com.xiaoleilu.hutool.log.Log;
+import com.xiaoleilu.hutool.log.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 @Service
 public class AssociationServiceImpl implements AssociationService {
-
+    /**
+     *打印日志
+     */
+    private static final Log logger = LogFactory.get(AssociationServiceImpl.class);
     @Resource
     private AssociationDao associationDao;
 
-    @Transactional(rollbackFor = Exception.class)
+
     /**
      * 查询社团列表
      * @param jsonObject
@@ -32,7 +39,21 @@ public class AssociationServiceImpl implements AssociationService {
         List<JSONObject> list = associationDao.listAssociation(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);
     }
+    /**
+     * 查询社团详情
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject getAssociation(JSONObject jsonObject) {
 
+        CommonUtil.fillPageParam(jsonObject);
+        JSONObject map = associationDao.getAssociation(jsonObject);
+        logger.info("查询社团详情的结果:"+map);
+
+        return CommonUtil.successJson(map);
+
+    }
     /**
      * 更新社团基本信息
      * @param jsonObject
@@ -66,6 +87,8 @@ try {
      * @param jsonObject
      * @return
      */
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JSONObject addAssociation(JSONObject jsonObject) {
         associationDao.insert(jsonObject);

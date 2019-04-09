@@ -18,7 +18,13 @@ public interface UserDao {
      * @return
      */
     int countUser(JSONObject jsonObject);
-
+    /**
+     * 查询可选择为社长用户数量
+     *
+     * @param jsonObject
+     * @return
+     */
+    int assCountUser(JSONObject jsonObject);
     /**
      * 查询用户列表
      *
@@ -26,6 +32,13 @@ public interface UserDao {
      * @return
      */
     List<JSONObject> listUser(JSONObject jsonObject);
+    /**
+     * 查询可以被选择为社长的列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> assListUser(JSONObject jsonObject);
 
     /**
      * 查询所有的角色

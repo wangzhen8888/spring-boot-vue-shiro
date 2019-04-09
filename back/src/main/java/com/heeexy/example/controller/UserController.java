@@ -34,6 +34,17 @@ public class UserController {
         return userService.listUser(CommonUtil.request2Json(request));
     }
     /**
+     * 查询可以被选择为社长的列表
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("user:list")
+    @GetMapping("/assList")
+    public JSONObject assListUser(HttpServletRequest request) {
+        return userService.assListUser(CommonUtil.request2Json(request));
+    }
+    /**
      * 导入账号
      *
      * @param request

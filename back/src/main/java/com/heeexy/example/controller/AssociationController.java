@@ -55,4 +55,17 @@ public class AssociationController {
         return associationService.updateAssociation(requestJson);
     }
 
+    /**
+     * 查看社团详情
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("association:list")
+    @PostMapping("/getAssociation")
+    public  JSONObject getAssociation(@RequestBody JSONObject requestJson){
+
+//        CommonUtil.hasAllRequired(requestJson,"id" );
+        return associationService.getAssociation(requestJson);
+    }
+
 }

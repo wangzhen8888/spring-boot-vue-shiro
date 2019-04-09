@@ -8,6 +8,12 @@
         FROM sys_user u
         WHERE u.delete_status = '1'
     </select>
+    <!--查询可以被选择当社长的人员数量-->
+    <select id="assCountUser" resultType="Integer">
+        SELECT count(0)
+        FROM sys_user u
+        WHERE u.delete_status = '1' and is_choose=1
+    </select>
 
     <resultMap id="userMap" type="com.heeexy.example.util.model.One2Many">
         <id column="userId" property="userId"/>
@@ -56,7 +62,38 @@
 
         ORDER BY u.userId
     </select>
+    <select id="assListUser" resultMap="userMap" parameterType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        u.*,
+        r.role_name roleName,
+        CONCAT(p.menu_name, p.permission_name) permissionName
+        FROM (
+        SELECT
+        id userId,
+        username username,
+        nickname nickname,
+        role_id roleId,
+        stu_num stuNum,
+        class class,
+        delete_status deleteStatus,
+        DATE_FORMAT(create_time, '%Y.%m.%d %T') createTime,
+        DATE_FORMAT(update_time, '%Y.%m.%d %T') updateTime
+        FROM sys_user
+        WHERE
+        <if test="stuNum != null and stuNum != ''">
+            username=#{stuNum} AND
+        </if>
+        delete_status = '1' and is_choose=1
 
+        ORDER BY id
+        LIMIT #{offSet}, #{pageRow}
+        ) u
+        LEFT JOIN sys_role r ON r.id = u.roleId
+        LEFT JOIN sys_role_permission rp ON rp.role_id = r.id
+        LEFT JOIN sys_permission p ON p.id = rp.permission_id
+
+        ORDER BY u.userId
+    </select>
     <select id="getAllRoles" resultType="com.alibaba.fastjson.JSONObject">
         SELECT
             id        roleId,

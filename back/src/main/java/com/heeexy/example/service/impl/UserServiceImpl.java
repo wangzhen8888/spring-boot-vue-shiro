@@ -63,7 +63,20 @@ public class UserServiceImpl implements UserService {
         System.out.println(list);
         return CommonUtil.successPage(jsonObject, list, count);
     }
-
+    /**
+     * 查询可以被选择为社长的列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject assListUser(JSONObject jsonObject) {
+        CommonUtil.fillPageParam(jsonObject);
+        int count = userDao.assCountUser(jsonObject);
+        List<JSONObject> list = userDao.assListUser(jsonObject);
+        System.out.println(list);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
     /**
      * 解析Excel
      * 通过excel导入用户

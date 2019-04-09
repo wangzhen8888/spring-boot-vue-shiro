@@ -18,6 +18,15 @@ public interface ArticleDao {
      */
     int addArticle(JSONObject jsonObject);
 
+
+    /**
+     * 批量新增文章
+     *
+     * @param jsonObject
+     * @return
+     */
+    int batchddArticle(List<JSONObject> list);
+
     /**
      * 统计文章总数
      *

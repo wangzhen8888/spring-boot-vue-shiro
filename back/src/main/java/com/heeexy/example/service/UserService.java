@@ -18,6 +18,13 @@ public interface UserService {
      */
     JSONObject listUser(JSONObject jsonObject);
     /**
+     * 查询可以被选择为社长的列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject assListUser(JSONObject jsonObject);
+    /**
      * 解析Excel
      * 通过excel导入用户
      * @param file 文件

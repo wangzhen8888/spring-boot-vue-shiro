@@ -27,6 +27,12 @@ public interface AssociationDao {
      */
     List<JSONObject> listAssociation(JSONObject jsonObject);
     /**
+     * 查询社团详情
+     * @param jsonObject
+     * @return
+     */
+    JSONObject getAssociation(JSONObject jsonObject);
+    /**
      * 查询社团数量
      * @param jsonObject
      * @return
