@@ -33,6 +33,12 @@ public interface AssociationDao {
      */
     JSONObject getAssociation(JSONObject jsonObject);
     /**
+     * 查询社长信息
+     * @param jsonObject
+     * @return
+     */
+    JSONObject getUserInfo(JSONObject jsonObject);
+    /**
      * 查询社团数量
      * @param jsonObject
      * @return
@@ -53,5 +59,10 @@ public interface AssociationDao {
      */
     int updateAssUser(JSONObject jsonObject);
 
-
+    /**
+     * 获取社团成员数量
+     * @param jsonObject
+     * @return
+     */
+    int assUserCount(JSONObject jsonObject);
 }

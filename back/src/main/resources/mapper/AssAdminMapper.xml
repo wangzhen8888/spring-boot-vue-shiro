@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heeexy.example.dao.AssAdminDao">
+
+
+    <!--获取社员数量-->
+    <select id="countAssUser" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
+        SELECT COUNT(0) from association a left JOIN ass_users au on a.id=au.assocation_id WHERE a.user_id=#{userId}
+        AND a.delete_status='1'
+    </select>
+    <!--获取社员列表-->
+    <select id="listAssUser" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT a.*,s.nickname,s.class FROM ass_users a LEFT JOIN sys_user s on a.user_id=s.id WHERE a.assocation_id=#{id}
+        AND a.delete_status=1 LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--根据社长id获取社团id-->
+    <select id="getAdminId" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
+        SELECT a.id from association a where a.user_id=#{userId}
+    </select>
+    <update id="agreeAssUser" parameterType="com.alibaba.fastjson.JSONObject" >
+        update ass_users
+        set
+        is_accept=#{is_accept}
+        where user_id=#{user_id} and assocation_id=#{assocation_id}
+    </update>
+</mapper>

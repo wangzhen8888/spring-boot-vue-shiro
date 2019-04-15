@@ -21,10 +21,13 @@
   </select>
   <!--获取社团详情-->
   <select id="getAssociation" resultType="com.alibaba.fastjson.JSONObject">
+    SELECT a.*
+    FROM association a
+    WHERE a.delete_status=1 and a.id=#{id}
 
-    SELECT a.*,au.user_id
-    FROM association a left join ass_users au on  a.id=au.assocation_id
-    WHERE a.delete_status = 1 AND a.is_open=1 and au.delete_status=1 and au.user_type=1 and a.id=#{id}
+  </select>
+  <select id="getUserInfo" resultType="com.alibaba.fastjson.JSONObject">
+    select u.nickname,u.class from sys_user  u where u.delete_status='1' and u.id=#{user_id}
 
   </select>
   <!--获取社团列表-->
@@ -47,12 +50,28 @@
     name=#{name},
     details=#{details},
     simple_detail=#{simple_detail},
-    delete_status=#{delete_status},
+    <if test="delete_status !='' and delete_status !=null">
+      delete_status=#{delete_status，jdbcType=INTEGER},
+    </if>
+
     user_id=#{user_id}
     WHERE id = #{id}
   </update>
-  <insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >
-    INSERT INTO ass_users (user_id,assocation_id,is_accept,user_type)
-    VALUE (#{user_id},#{id},#{is_accept},#{user_type})
-  </insert>
+  <!--<insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >-->
+    <!--INSERT INTO ass_users (user_id,assocation_id,is_accept,user_type)-->
+    <!--VALUE (#{user_id},#{id},#{is_accept},#{user_type})-->
+  <!--</insert>-->
+  <update id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject">
+    update sys_user
+    set
+    is_choose=#{is_choose}
+    where id=#{old_user_id}
+
+  </update>
+
+  <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject">
+    SELECT count(0)
+    FROM ass_users au
+    WHERE au.delete_status = 1 AND  au.assocation_id=#{id}
+  </select>
 </mapper>
