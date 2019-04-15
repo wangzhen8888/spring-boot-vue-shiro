@@ -35,7 +35,7 @@
         >
         
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <a href="./static/moban.xlsx" rel="external nofollow" download="模板">
+          <a href="./static/学生账号模板.xls" rel="external nofollow" download="学生账号模板.xls">
             <el-button size="small" type="success">下载模板</el-button>
           </a>
 
@@ -68,14 +68,14 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="序号" width="35">
+      <el-table-column align="center" label="序号" width="100">
         <template slot-scope="scope">
           <span v-text="getIndex(scope.$index)"></span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="姓名" prop="nickname" width="80"></el-table-column>
-      <el-table-column align="center" label="用户名" prop="username" width="150"></el-table-column>
-      <el-table-column align="center" label="角色类型" width="120px">
+      <el-table-column align="center" label="姓名" prop="nickname" width="150"></el-table-column>
+      <el-table-column align="center" label="学号" prop="username" width="150"></el-table-column>
+      <el-table-column align="center" label="角色类型" width="200px">
         <template slot-scope="scope">
           <el-tag type="success" v-text="scope.row.roleName" v-if="scope.row.roleId===1"></el-tag>
           <el-tag type="primary" v-text="scope.row.roleName" v-else></el-tag>
@@ -84,7 +84,7 @@
        <el-table-column align="center" label="班级" prop="class" width="170"></el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="170"></el-table-column>
       <el-table-column align="center" label="最近修改时间" prop="updateTime" width="170"></el-table-column>
-      <el-table-column align="center" label="管理" width="220" v-if="hasPerm('user:update')">
+      <el-table-column align="center" label="管理"  v-if="hasPerm('user:update')">
         <template slot-scope="scope">
           <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
           <el-button

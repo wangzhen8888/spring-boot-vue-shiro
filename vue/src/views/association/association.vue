@@ -40,13 +40,14 @@
       </el-table-column>
       <el-table-column align="center" label="管理" width="250" v-if="hasPerm('association:admin')">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             type="info"
             icon="info"
             size="mini"
             v-if="hasPerm('association:delete') "
             @click="showDetail(scope.$index)"
-          >详情</el-button>
+          >详情</el-button> -->
+            <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.row)">社团管理</el-button>
           <el-button
             type="danger"
             icon="delete"
@@ -54,7 +55,7 @@
             v-if="hasPerm('association:delete') "
             @click="removeAssociation(scope.$index)"
           >删除</el-button>
-          <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.row)">修改</el-button>
+        
         </template>
       </el-table-column>
       <img src alt>
@@ -116,7 +117,8 @@
         <el-form-item v-show="!dialogFormVisible1" label="选择社长">
        
 
-          <el-tooltip content="" placement="top">
+          <el-tooltip  placement="top">
+            <div slot="content">{{tesTitle}}</div>
           <el-button>{{tes}}</el-button>
           </el-tooltip>
       <el-button type="warning" style="margin-left:22px" @click="showAdminList()">选择社长</el-button>
@@ -161,11 +163,8 @@
       <template slot-scope="scope">
         <el-button
           size="mini"
-          @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+          @click="handleEdit(scope.$index, scope.row)">选择为社长</el-button>
+       
       </template>
     </el-table-column>
   </el-table>
@@ -189,6 +188,7 @@ export default {
   data() {
     return {
       tes:"无社长",
+      tesTitle:"",
       associationDetail:"",
       associationName:"",
       totalCount: 0, //分页组件--数据总条数
@@ -211,6 +211,7 @@ export default {
         create_time:"",
         delete_status:"",
         update_time:"",
+        old_user_id:"",
         user_id:"",
         is_open:""
 
@@ -237,11 +238,15 @@ export default {
         console.log(file);
       },
     handleEdit(index, row) {
-        console.log(index, row);
+      console.log(row);
+      this.association.old_user_id=this.association.user_id;
+      this.association.user_id=row.userId;
+      this.tesTitle="学号:"+row.userId+"-"+"班级:"+row.class;
+      this.tes=row.nickname;
+      this.detailDialogVisible=false;
+      
       },
-      handleDelete(index, row) {
-        console.log(index, row);
-      },
+     
      handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -250,7 +255,7 @@ export default {
           .catch(_ => {});
       },
       showAdminList(){
- this.getUserList();
+       this.getUserList();
         this.detailDialogVisible=true
 
       }
@@ -277,14 +282,15 @@ this.association.user_id=this.value9;
       });
     },
     showCreate() {
-      this.getUserList();
+      // this.getUserList();
       //显示新增对话框
       this.association.name = "";
       this.association.details = "";
       this.association.simple_detail = "";
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-      
+      this.tes="请选择社长";
+      this.tesTitle="";
       console.log("执行了获取用户列表");
     },
     createAssociation() {
@@ -312,17 +318,19 @@ this.association.user_id=this.value9;
         method: "post",
         data: this.association
       }).then(res=> {
-
+        console.log(res)
       //显示修改对话框
       this.association.id = res.id;
       this.association.name = res.name;
       this.association.details = res.details;
       this.association.simple_detail = res.simple_detail;
-      this.association.delete_status=res.delete_status;
+      this.delete_status=res.delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-     console.log(res.user_id);
-      this.tes=res.user_id;
+      this.association.user_id=res.user_id;
+      this.tesTitle="学号:"+res.user_id+"-"+"班级:"+res.class;
+      this.tes=res.userName;
+      console.log(this.association)
       
      
      
@@ -355,7 +363,7 @@ this.association.user_id=this.value9;
         method: "get",
        }
      ).then(result=>{
-       
+       console.log(result.list);
        this.userList=result.list;
        console.log(result)
        this.totalCount = result.totalCount;
@@ -379,6 +387,7 @@ this.association.user_id=this.value9;
       });
     },
     toRemoveAssociation(asMsg) {
+      console.log(asMsg)
 
       //删除社团
       this.api({
@@ -457,6 +466,7 @@ this.association.user_id=this.value9;
       this.dialogStatus ="detail"
       this.dialogFormVisible=true;
       this.dialogFormVisible1=true;
+     
     }
   
 

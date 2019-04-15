@@ -55,6 +55,8 @@ export const asyncRouterMap = [{
         },
         menu: 'article'
       },
+     
+      
       {
         path: 'association',
         name: '社团列表',
@@ -66,6 +68,17 @@ export const asyncRouterMap = [{
         menu: 'association'
 
       },
+      {
+        path: 'assAdmin',
+        name: '我管理的社团',
+        component: _import('assadmin/assadmin'),
+        meta: {
+          title: '我管理的社团',
+          icon: 'example'
+        },
+        menu: 'assAdmin'
+      }
+     
     ]
   },
   {
