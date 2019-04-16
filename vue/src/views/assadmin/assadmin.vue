@@ -40,7 +40,50 @@
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination></el-tab-pane>
-    <el-tab-pane label="活动管理" name="second">活动管理</el-tab-pane>
+    <el-tab-pane label="活动管理" name="second"> 
+      <el-button type="primary">创建活动</el-button>
+      <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
+              highlight-current-row>
+      <el-table-column align="center" label="序号" width="80">
+        <template slot-scope="scope">
+          <span v-text="getIndex(scope.$index)"> </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="name" label="活动名称" style="width: 60px;"></el-table-column>
+      <el-table-column align="center" prop="details" label="活动简介" style="width: 60px;"></el-table-column>
+   
+      <el-table-column align="center"  label="活动状态" style="width: 60px;">
+           <template slot-scope="scope">
+               <el-tag  v-show="scope.row.is_open==1">开放中</el-tag>
+               <el-tag  v-show="scope.row.is_open==2" type="success">关闭中</el-tag>
+            </template>
+  </el-table-column>
+      <el-table-column align="center" label="活动开始时间" width="170">
+        <template slot-scope="scope">
+          <span>{{scope.row.start_time}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="活动结束时间" width="170">
+        <template slot-scope="scope">
+          <span>{{scope.row.end_time}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
+        <template slot-scope="scope">
+          <el-button type="primary" v-show="scope.row.is_accept==1" icon="edit" :disabled="true" @click="agreeUser(scope.$index)">已审批</el-button>
+          <el-button type="primary" v-show="scope.row.is_accept==2" icon="edit" @click="agreeUser(scope.row)">审批</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="listQuery.pageNum"
+      :page-size="listQuery.pageRow"
+      :total="totalCount"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination></el-tab-pane>
     <el-tab-pane label="考勤管理" name="third">考勤管理</el-tab-pane>
   
   </el-tabs>
@@ -99,21 +142,42 @@
     },
     created() {
       this.listQuery.userId=this.user;
-      this.getList();
+      this.getAssUserList();
     },
     methods: {
 
       handleClick(tab, event) {
-        console.log(tab, event);
+     if("first"==tab.name){
+      this.getAssUserList();
+     }
+     if("second"==tab.name){
+    this.getActivityList();
+     }
       },
-      getList() {
+      getAssUserList() {
         //查询列表
-        if (!this.hasPerm('article:list')) {
+        if (!this.hasPerm('assAdmin:list')) {
           return
         }
         this.listLoading = true;
         this.api({
           url: "/assAdmin/listAssUser",
+          method: "post",
+          params: this.listQuery
+        }).then(data => {
+          this.listLoading = false;
+          this.list = data.list;
+          this.totalCount = data.totalCount;
+        })
+      },
+        getActivityList() {
+        //查询列表
+        if (!this.hasPerm('assAdmin:list')) {
+          return
+        }
+        this.listLoading = true;
+        this.api({
+          url: "/assAdmin/listActivity",
           method: "post",
           params: this.listQuery
         }).then(data => {
