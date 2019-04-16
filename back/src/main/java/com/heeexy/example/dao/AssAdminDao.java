@@ -28,6 +28,18 @@ public interface AssAdminDao {
      */
     int countActivity(JSONObject jsonObject);
     /**
+     * 新增社团活动
+     * @param jsonObject
+     * @return
+     */
+    int createActivity(JSONObject jsonObject);
+    /**
+     * 更新社团活动
+     * @param jsonObject
+     * @return
+     */
+    int updateActivity(JSONObject jsonObject);
+    /**
      * 获取社团成员数量
      * @param jsonObject
      * @return

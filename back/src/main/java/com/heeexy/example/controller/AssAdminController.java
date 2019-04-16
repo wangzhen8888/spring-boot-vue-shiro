@@ -33,6 +33,29 @@ public class AssAdminController {
     public JSONObject listActivity(HttpServletRequest request) {
         return assAdminService.listActivity(CommonUtil.request2Json(request));
     }
+
+    /**
+     * 创建活动
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("assAdmin:add")
+    @PostMapping("/createActivity")
+    public JSONObject createActivity(HttpServletRequest request) {
+        return assAdminService.createActivity(CommonUtil.request2Json(request));
+    }
+    /**
+     * 更新活动
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("assAdmin:admin")
+    @PostMapping("/updateActivity")
+    public JSONObject updateActivity(HttpServletRequest request) {
+        return assAdminService.updateActivity(CommonUtil.request2Json(request));
+    }
     /**
      * 查询社员列表
      *

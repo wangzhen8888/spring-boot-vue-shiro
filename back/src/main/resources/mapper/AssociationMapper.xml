@@ -72,6 +72,6 @@
   <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject">
     SELECT count(0)
     FROM ass_users au
-    WHERE au.delete_status = 1 AND  au.assocation_id=#{id}
+    WHERE au.delete_status = 1 AND  au.association_id=#{id}
   </select>
 </mapper>

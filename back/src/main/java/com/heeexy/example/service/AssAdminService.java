@@ -19,6 +19,20 @@ public interface AssAdminService {
      */
     JSONObject listActivity(JSONObject jsonObject);
     /**
+     * 创建活动
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject createActivity(JSONObject jsonObject);
+    /**
+     * 更新活动
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject updateActivity(JSONObject jsonObject);
+    /**
      * 审批社员
      *
      * @param jsonObject
