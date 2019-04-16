@@ -11,12 +11,12 @@
                 v-if="hasPerm('user:add')"
                 @click="showCreate"
               >添加新用户</el-button>
-              <el-button
+              <!-- <el-button
                 type="primary"
                 icon="plus"
                 v-if="hasPerm('user:add')"
                 @click="getList()"
-              >查询</el-button>
+              >查询</el-button> -->
             </el-form-item>
           </el-form>
         </div>

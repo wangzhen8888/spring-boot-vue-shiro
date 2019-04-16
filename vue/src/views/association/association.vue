@@ -35,7 +35,7 @@
       <el-table-column align="center" prop="simple_detail" label="社团简介" style="width: 60px;"></el-table-column>
       <el-table-column align="center" label="创建时间" width="150">
         <template slot-scope="scope">
-          <span>{{scope.row.createTime}}</span>
+          <span>{{scope.row.create_time}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="管理" width="250" v-if="hasPerm('association:admin')">

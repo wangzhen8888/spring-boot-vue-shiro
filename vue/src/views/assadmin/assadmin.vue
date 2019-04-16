@@ -24,9 +24,9 @@
           <span>{{scope.row.create_time}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
+      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('assAdmin:admin')">
         <template slot-scope="scope">
-          <el-button type="primary" v-show="scope.row.is_accept==1" icon="edit" :disabled="true" @click="agreeUser(scope.$index)">已审批</el-button>
+          <el-button type="primary" v-show="scope.row.is_accept==1" icon="edit"  @click="agreeUser(scope.row)">踢出社团</el-button>
           <el-button type="primary" v-show="scope.row.is_accept==2" icon="edit" @click="agreeUser(scope.row)">审批</el-button>
         </template>
       </el-table-column>
@@ -41,7 +41,7 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination></el-tab-pane>
     <el-tab-pane label="活动管理" name="second"> 
-      <el-button type="primary">创建活动</el-button>
+      <el-button type="primary" @click="showCreate()" >创建活动</el-button>
       <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
               highlight-current-row>
       <el-table-column align="center" label="序号" width="80">
@@ -68,10 +68,10 @@
           <span>{{scope.row.end_time}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
+      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('assAdmin:admin')">
         <template slot-scope="scope">
-          <el-button type="primary" v-show="scope.row.is_accept==1" icon="edit" :disabled="true" @click="agreeUser(scope.$index)">已审批</el-button>
-          <el-button type="primary" v-show="scope.row.is_accept==2" icon="edit" @click="agreeUser(scope.row)">审批</el-button>
+          <el-button type="primary"  icon="edit"  @click="showUpdateActivity(scope.row)">活动管理</el-button>
+       
         </template>
       </el-table-column>
     </el-table>
@@ -88,20 +88,57 @@
   
   </el-tabs>
    
-    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form class="small-space"  :model="tempActivity" ref="tempActivity" label-position="left" label-width="100px"
                style='width: 300px; margin-left:50px;'>
-        <el-form-item label="文章">
-          <el-input type="text" v-model="tempArticle.content">
+        <el-form-item label="活动名称" prop="name" :rules="[
+      { required: true, message: '请输入活动名称', trigger: 'blur' },
+    ]">
+          <el-input type="text" v-model="tempActivity.name">
           </el-input>
+        </el-form-item>
+        <el-form-item label="活动介绍" prop="details" :rules="[
+      { required: true, message: '请输入活动介绍', trigger: 'blur' },
+    ]">
+          <el-input type="text" v-model="tempActivity.details">
+          </el-input>
+        </el-form-item>
+         <el-form-item label="活动时间" :rules="[
+      { required: true, message: '请选择活动时间', trigger: 'blur' },
+    ]">
+         <div class="block">
+    <span class="demonstration">选择活动开始结束时间</span>
+    <el-date-picker
+     @change="changeTime"
+      v-model="dateTime"
+      type="datetimerange"
+      range-separator="至"
+      value-format="yyyy-MM-dd HH:mm"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+      
+    </el-date-picker>
+  </div>
+        </el-form-item>
+            <el-form-item label="活动状态" prop="name" :rules="[
+      { required: true, message: '请选择活动状态', trigger: 'blur' },
+    ]">
+         <el-select v-model="tempActivity.is_open" placeholder="请选择">
+        <el-option
+       v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="success" @click="createArticle">创 建</el-button>
-        <el-button type="primary" v-else @click="updateArticle">修 改</el-button>
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="success" @click="createActivity">创 建</el-button>
+        <el-button type="primary" v-else @click="updateActivity">修 改</el-button>
       </div>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -119,19 +156,46 @@
           pageRow: 10,//每页条数
           userId: ''
         },
+        options:[
+          {
+          value: 1,
+          label: '开放'},
+          { value: 2,
+          label: '关闭'}],
+       rules:{
+            name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          details: [
+            { required: true, message: '请填写活动形式', trigger: 'blur' }
+          ]
+       },
         dialogStatus: 'create',
         dialogFormVisible: false,
         textMap: {
-          update: '编辑',
-          create: '创建文章'
+          update: '编辑活动',
+          create: '创建活动'
 
+
+        },
+        tempActivity:{
+          id:"",
+          association_id:"",
+          userId:"",
+          name:"",
+          details:"",
+          start_time:"",
+          end_time:"",
+          is_open:""
 
         },
         assUser: {
           user_id: "",
-          assocation_id: "",
+          association_id: "",
           is_accept:""
-        }
+        },
+        dateTime:[]
       }
     },
     computed:{
@@ -142,9 +206,14 @@
     },
     created() {
       this.listQuery.userId=this.user;
+      console.log(this.listQuery)
       this.getAssUserList();
     },
     methods: {
+      changeTime(){
+       this.tempActivity.start_time = this.dateTime[0];
+        this.tempActivity.end_time = this.dateTime[1];
+      },
 
       handleClick(tab, event) {
      if("first"==tab.name){
@@ -194,7 +263,13 @@
       handleCurrentChange(val) {
         //改变页码
         this.listQuery.pageNum = val
-        this.getList();
+        this.getAssUserList()
+      },
+      handleClose(){
+       this.dialogFormVisible = false;
+         this.dateTime=[];
+          this.tempActivity.is_open=""
+
       },
       getIndex($index) {
         //表格序号
@@ -202,27 +277,37 @@
       },
       showCreate() {
         //显示新增对话框
-        this.tempArticle.content = "";
+        this.tempActivity.name = "";
+        this.tempActivity.userId = this.user;
+        this.tempActivity.details = "";
         this.dialogStatus = "create"
         this.dialogFormVisible = true
       },
         agreeUser(index) {
           this.assUser.user_id=index.user_id;
-          this.assUser.assocation_id=index.assocation_id;
-          this.assUser.is_accept=1;
+          this.assUser.association_id=index.association_id;
+          if(index.is_accept==1){
+            this.assUser.is_accept=2;
+
+          }
+          if(index.is_accept==2){
+            this.assUser.is_accept=1;
+
+          }
+          
           console.log(this.assUser)
-        this.$confirm('即将审批当前社员入团,请谨慎操作,是否继续?', '提示', {
+        this.$confirm('请谨慎操作,是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          //审批社员
+          //管理社员
           this.api({
           url: "/assAdmin/agreeAssUser",
           method: "post",
           params: this.assUser
         }).then((res) => {
-          this.getList();
+        this.getAssUserList()
         console.log(res)
         })
 
@@ -237,6 +322,62 @@
           });          
         });
 
+      },
+      createActivity() {
+        console.log(this.tempActivity);
+        if(this.tempActivity.name==""||this.tempActivity.details==""||this.tempActivity.start_time==""||this.tempActivity.end_time==""){
+          this.$message({
+          message: '请输入必选数据',
+          type: 'warning'
+        });
+    
+        return
+        }
+      
+     
+     
+     
+        console.log(this.tempActivity)
+        //创建活动
+        this.api({
+          url: "/assAdmin/createActivity",
+          method: "post",
+          params: this.tempActivity
+        }).then(() => {
+          this.getActivityList();
+          this.dialogFormVisible = false
+          this.dateTime=[];
+          this.tempActivity.is_open=""
+        })
+      },
+      showUpdateActivity(index){
+     
+         //显示更新对话框
+          this.tempActivity.id=index.id;
+          this.tempActivity.association_id=index.association_id;
+        this.tempActivity.name = index.name;
+        this.tempActivity.details = index.details;
+        this.tempActivity.start_time = index.start_time;
+        this.tempActivity.end_time = index.end_time;
+        this.dateTime=[index.start_time,index.end_time]
+        this.dialogStatus = "update"
+        this.tempActivity.is_open=index.is_open;
+        this.dialogFormVisible = true
+       
+         console.log(this.tempActivity)
+
+      },
+      updateActivity(){
+
+      //更新活动
+        this.api({
+          url: "/assAdmin/updateActivity",
+          method: "post",
+          params: this.tempActivity
+        }).then(() => {
+          this.getActivityList();
+          this.dialogFormVisible = false
+        })
       },
       createArticle() {
         //保存新文章
