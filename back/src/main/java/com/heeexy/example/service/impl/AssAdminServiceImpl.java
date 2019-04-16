@@ -42,6 +42,23 @@ public class AssAdminServiceImpl implements AssAdminService {
         List<JSONObject> list = assAdminDao.listAssUser(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);
     }
+    /**
+     * 查询活动列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject listActivity(JSONObject jsonObject) {
+        logger.info("查询社团活动入参" + jsonObject.toString());
+        CommonUtil.fillPageParam(jsonObject);
+        int count = assAdminDao.countActivity(jsonObject);
+        //根据社长id获取社团id
+        JSONObject json = assAdminDao.getAdminId(jsonObject);
+        jsonObject.put("id",json.getString("id"));
+        List<JSONObject> list = assAdminDao.listActivity(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
 
     /**
      * 审批社员

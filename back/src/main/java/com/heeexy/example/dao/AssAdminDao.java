@@ -15,7 +15,18 @@ public interface AssAdminDao {
      */
     List<JSONObject> listAssUser(JSONObject jsonObject);
 
-
+    /**
+     * 查询活动列表
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> listActivity(JSONObject jsonObject);
+    /**
+     * 获取社团活动数量
+     * @param jsonObject
+     * @return
+     */
+    int countActivity(JSONObject jsonObject);
     /**
      * 获取社团成员数量
      * @param jsonObject
@@ -29,7 +40,7 @@ public interface AssAdminDao {
      */
     int agreeAssUser(JSONObject jsonObject);
     /**
-     * 获取社团成员数量
+     * 获取社团id
      * @param jsonObject
      * @return
      */

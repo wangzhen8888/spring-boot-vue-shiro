@@ -2,11 +2,12 @@ package com.heeexy.example.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.service.AssAdminService;
-import com.heeexy.example.service.AssociationService;
 import com.heeexy.example.util.CommonUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,17 @@ public class AssAdminController {
     @Autowired
     private AssAdminService assAdminService;
 
+    /**
+     * 查询活动列表
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("assAdmin:list")
+    @PostMapping("/listActivity")
+    public JSONObject listActivity(HttpServletRequest request) {
+        return assAdminService.listActivity(CommonUtil.request2Json(request));
+    }
     /**
      * 查询社员列表
      *
