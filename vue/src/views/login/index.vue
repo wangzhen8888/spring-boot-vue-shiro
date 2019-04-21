@@ -3,7 +3,7 @@
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"
              label-width="0px"
              class="card-box login-form">
-      <h3 class="title">社团管理系统</h3>
+      <h3 class="title">仓库管理系统</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user"/>
@@ -31,7 +31,7 @@
     data() {
       return {
         loginForm: {
-          username: 'admin',
+          username: '201470024130',
           password: '123456'
         },
         loginRules: {

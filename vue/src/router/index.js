@@ -45,16 +45,37 @@ export const asyncRouterMap = [{
       title: '功能模块',
       icon: 'tree'
     },
-    children: [{
-        path: 'article',
-        name: '测试',
-        component: _import('article/article'),
+    children: [
+      {
+        path: 'goods',
+        name: '货物管理',
+        component: _import('goods/goods'),
         meta: {
-          title: '测试',
+          title: '货物管理',
           icon: 'example'
         },
-        menu: 'article'
+        menu: 'goods'
       },
+      {
+        path: 'order',
+        name: '货物盘点管理',
+        component: _import('order/order'),
+        meta: {
+          title: '货物出入库管理',
+          icon: 'example'
+        },
+        menu: 'order'
+      },
+      {
+        path: 'inventory',
+        name: '盘点管理',
+        component: _import('inventory/inventory'),
+        meta: {
+          title: '盘点管理',
+          icon: 'example'
+        },
+        menu: 'inventory'
+      }
       // {
       //   path: 'association',
       //   name: '社团列表',

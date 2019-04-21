@@ -19,6 +19,11 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     const res = response.data;
+
+    if(res.type =="application/vnd.ms-excel"){
+  
+      return res
+    }
     if (res.returnCode == '1000') {
       return res;
     }
