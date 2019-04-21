@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.InventoryAdminDao">
+    <!--新增货物出入库记录-->
+    <insert id="addInventoryAdmin" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO inventoryadmin
+        (goods_name,goods_id,add_num,reduce_num,goods_price,start_time,end_time,scrap_num,user_name,user_id) VALUES
+      ( #{goods_name},#{goods_id},#{add_num},#{reduce_num},#{goods_price},#{start_time},#{end_time},#{scrap_num},#{user_name},#{user_id})
+    </insert>
+    <!--查询货物的盘点记录数量-->
+    <select id="countInventoryAdmin" resultType="Integer">
+        SELECT count(0)
+        FROM inventoryadmin w
+        WHERE w.delete_status = 1
+        <if test="goods_name !=null and goods_name!=''">
+
+            AND w.goods_name LIKE CONCAT('%',CONCAT(#{goods_name},'%'))
+        </if>
+        <if test="user_name !=null and user_name!=''">
+
+            AND w.user_name LIKE CONCAT('%',CONCAT(#{user_name},'%'))
+        </if>
+        <if test="goods_id !=null and goods_id!=''">
+            AND w.goods_id=#{goods_id}
+        </if>
+        <if test="company_name !=null and company_name!=''">
+            AND w.company_name LIKE CONCAT('%',CONCAT(#{company_name},'%'))
+        </if>
+        <if test="start_time !=null and start_time!='' and end_time!=null and end_time!=''">
+            AND w.create_time &gt;#{start_time} AND w.create_time &lt;#{end_time}
+
+        </if>
+    </select>
+    <!--查询货物订单列表-->
+    <select id="listInventoryAdmin" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        w.id id,
+        w.goods_name,
+        w.goods_id,
+        w.add_num,
+        w.reduce_num,
+        w.goods_price,
+        date_format( w.start_time, '%Y.%m.%d %T') start_time,
+        date_format( w.end_time, '%Y.%m.%d %T') end_time,
+        w.scrap_num,
+        w.user_name,
+        w.user_id,
+        date_format(w.create_time, '%Y.%m.%d %T') createTime,
+        date_format(w.update_time, '%Y.%m.%d %T') updateTime
+        FROM inventoryadmin w
+        WHERE w.delete_status = '1'
+        <if test="goods_name !=null and goods_name!=''">
+
+            AND w.goods_name LIKE CONCAT('%',CONCAT(#{goods_name},'%'))
+        </if>
+        <if test="user_name !=null and user_name!=''">
+
+            AND w.user_name LIKE CONCAT('%',CONCAT(#{user_name},'%'))
+        </if>
+        <if test="goods_id !=null and goods_id!=''">
+            AND w.goods_id=#{goods_id}
+        </if>
+        <if test="company_name !=null and company_name!=''">
+            AND w.company_name LIKE CONCAT('%',CONCAT(#{company_name},'%'))
+        </if>
+        <if test="start_time !=null and start_time!='' and end_time!=null and end_time!=''">
+            AND w.create_time &gt;#{start_time} AND w.create_time &lt;#{end_time}
+
+        </if>
+        ORDER BY w.id DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--动态更新货物订单信息-->
+    <update id="updateInventoryAdmin" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE orders
+        <set>
+
+
+            <if test="orderType != null and orderType!=''">order_type=#{orderType},</if>
+            <if test="marks != null and marks!=''">marks=#{marks},</if>
+
+        </set>
+
+        WHERE id = #{id}
+    </update>
+    <!--删除货物信息-->
+    <update id="deleteOrder" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE goods
+        SET delete_status=2
+        WHERE id=#{id}
+
+
+    </update>
+
+</mapper>

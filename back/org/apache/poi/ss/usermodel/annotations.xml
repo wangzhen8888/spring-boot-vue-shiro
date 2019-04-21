@@ -1,0 +1,5 @@
+<root>
+    <item name='org.apache.poi.ss.usermodel.HorizontalAlignment'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heeexy.example.dao.GoodsAdminDao">
+    <!--新增货物出入库记录-->
+    <insert id="addOrder" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO orders
+        (goods_id,goods_name,user_name,user_id,company_name,company_phone,goods_price,goods_num,order_type,marks) VALUES
+      ( #{goods_id},#{goods_name},#{user_name},#{user_id},#{company_name},#{company_phone},#{goods_price},#{goods_num},#{order_type},#{marks})
+    </insert>
+    <!--查询所有货物订单数量-->
+    <select id="countOrder" resultType="Integer">
+        SELECT count(0)
+        FROM orders w
+        WHERE w.delete_status = 1
+        <if test="goods_name !=null and goods_name!=''">
+
+            AND w.goods_name LIKE CONCAT('%',CONCAT(#{goods_name},'%'))
+        </if>
+        <if test="orderType !=null and orderType!=''">
+            AND w.order_type=#{orderType}
+        </if>
+        <if test="goods_id !=null and goods_id!=''">
+            AND w.goods_id=#{goods_id}
+        </if>
+        <if test="company_name !=null and company_name!=''">
+            AND w.company_name LIKE CONCAT('%',CONCAT(#{company_name},'%'))
+        </if>
+    </select>
+    <!--查询货物订单列表-->
+    <select id="listOrder" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        w.id id,
+        w.goods_id,
+        w.user_name,
+        w.company_name,
+        w.company_phone,
+        w.goods_name,
+        w.goods_num,
+        w.goods_price,
+        w.order_type,
+        w.user_id,
+        w.marks,
+        date_format(w.create_time, '%Y.%m.%d %T') createTime,
+        date_format(w.update_time, '%Y.%m.%d %T') updateTime
+        FROM orders w
+        WHERE w.delete_status = '1'
+        <if test="goods_name !=null and goods_name!=''">
+
+            AND w.goods_name LIKE CONCAT('%',CONCAT(#{goods_name},'%'))
+        </if>
+        <if test="orderType !=null and orderType!=''">
+            AND w.order_type=#{orderType}
+        </if>
+        <if test="goods_id !=null and goods_id!=''">
+            AND w.goods_id=#{goods_id}
+        </if>
+        <if test="company_name !=null and company_name!=''">
+            AND w.company_name LIKE CONCAT('%',CONCAT(#{company_name},'%'))
+        </if>
+        <if test="start_time !=null and start_time!='' and end_time!=null and end_time!=''">
+            AND w.create_time &gt;#{start_time} AND w.create_time &lt;#{end_time}
+
+        </if>
+        ORDER BY w.id DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--查询货物订单列表，不使用分页-->
+    <select id="listOrders" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        w.id id,
+        w.goods_id,
+        w.user_name,
+        w.company_name,
+        w.company_phone,
+        w.goods_name,
+        w.goods_num,
+        w.goods_price,
+        w.order_type,
+        w.user_id,
+        w.marks,
+        date_format(w.create_time, '%Y.%m.%d %T') createTime,
+        date_format(w.update_time, '%Y.%m.%d %T') updateTime
+        FROM orders w
+        WHERE w.delete_status = '1'
+        <if test="goods_name !=null and goods_name!=''">
+
+            AND w.goods_name LIKE CONCAT('%',CONCAT(#{goods_name},'%'))
+        </if>
+        <if test="orderType !=null and orderType!=''">
+            AND w.order_type=#{orderType}
+        </if>
+        <if test="goods_id !=null and goods_id!=''">
+            AND w.goods_id=#{goods_id}
+        </if>
+        <if test="company_name !=null and company_name!=''">
+            AND w.company_name LIKE CONCAT('%',CONCAT(#{company_name},'%'))
+        </if>
+        <if test="start_time !=null and start_time!='' and end_time!=null and end_time!=''">
+            AND w.create_time &gt;#{start_time} AND w.create_time &lt;#{end_time}
+
+        </if>
+        ORDER BY w.id DESC
+
+    </select>
+    <!--动态更新货物订单信息-->
+    <update id="updateOrder" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE orders
+        <set>
+
+
+            <if test="orderType != null and orderType!=''">order_type=#{orderType},</if>
+            <if test="marks != null and marks!=''">marks=#{marks},</if>
+
+        </set>
+
+        WHERE id = #{id}
+    </update>
+    <!--删除货物信息-->
+    <update id="deleteOrder" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE goods
+        SET delete_status=2
+        WHERE id=#{id}
+
+
+    </update>
+
+</mapper>
