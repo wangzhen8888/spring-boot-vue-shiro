@@ -24,7 +24,7 @@ public class GoodsAdminController {
     private GoodsAdminService goodsAdminService;
 
     /**
-     * 查询货物列表
+     * 查询货物订单列表
      *
      * @param request
      * @return
@@ -34,9 +34,20 @@ public class GoodsAdminController {
     public JSONObject listOrder(HttpServletRequest request) {
         return goodsAdminService.listOrder(CommonUtil.request2Json(request));
     }
+    /**
+     * 计算一个时间段内该商品的出入库数量
+     *
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("order:list")
+    @GetMapping("/orderMsg")
+    public JSONObject orderMsg(HttpServletRequest request) {
+        return goodsAdminService.orderMsg(CommonUtil.request2Json(request));
+    }
 
     /**
-     * 新增货物
+     * 新增货物货物订单记录
      *
      * @param requestJson
      * @return

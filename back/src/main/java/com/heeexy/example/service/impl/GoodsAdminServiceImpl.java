@@ -106,6 +106,43 @@ public class GoodsAdminServiceImpl implements GoodsAdminService {
     }
 
     /**
+     * 计算一个时间段内该商品的出入库数量
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject orderMsg(JSONObject jsonObject) {
+        List<JSONObject> list = goodsAdminDao.listOrders(jsonObject);
+        int reduce_num = 0;//出库总数量
+        int add_num = 0;//入库总数量
+        int scrap_num=0;//报废数量
+        JSONObject json=new JSONObject();
+        for (JSONObject obj : list) {
+            //订单为入库订单
+            if (0==obj.getIntValue("order_type")){
+                add_num=add_num+obj.getIntValue("goods_num");
+            }
+            //订单为出库订单
+            if (1==obj.getIntValue("order_type")){
+                reduce_num=reduce_num+obj.getIntValue("goods_num");
+            }
+            //订单为报废订单
+            if (2==obj.getIntValue("order_type")){
+                scrap_num=scrap_num+obj.getIntValue("goods_num");
+            }
+
+
+
+        }
+        json.put("reduce_num",reduce_num);
+        json.put("add_num",add_num);
+        json.put("scrap_num",scrap_num);
+        return CommonUtil.successJson(json);
+
+    }
+
+    /**
      * 货物盘点记录列表
      *
      * @param jsonObject

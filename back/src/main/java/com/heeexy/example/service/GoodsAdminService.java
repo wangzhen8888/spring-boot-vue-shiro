@@ -14,6 +14,13 @@ public interface GoodsAdminService {
      * @return
      */
     JSONObject addOrder(JSONObject jsonObject);
+    /**
+     * 计算一个时间段内该商品的出入库数量
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject orderMsg(JSONObject jsonObject);
 
     /**
      * 盘点货物记录列表

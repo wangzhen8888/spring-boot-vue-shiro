@@ -4,10 +4,10 @@
 <mapper namespace="com.heeexy.example.dao.GoodsAdminDao">
     <!--新增货物出入库记录-->
     <insert id="addOrder" parameterType="com.alibaba.fastjson.JSONObject">
-        INSERT INTO orders
-        (goods_id,goods_name,user_name,user_id,company_name,company_phone,goods_price,goods_num,order_type,marks) VALUES
-      ( #{goods_id},#{goods_name},#{user_name},#{user_id},#{company_name},#{company_phone},#{goods_price},#{goods_num},#{order_type},#{marks})
-    </insert>
+    INSERT INTO orders
+    (goods_id,goods_name,user_name,user_id,company_name,company_phone,goods_price,goods_num,order_type,marks) VALUES
+    ( #{goods_id},#{goods_name},#{user_name},#{user_id},#{company_name},#{company_phone},#{goods_price},#{goods_num},#{order_type},#{marks})
+</insert>
     <!--查询所有货物订单数量-->
     <select id="countOrder" resultType="Integer">
         SELECT count(0)
@@ -41,6 +41,7 @@
         w.order_type,
         w.user_id,
         w.marks,
+        w.order_state,
         date_format(w.create_time, '%Y.%m.%d %T') createTime,
         date_format(w.update_time, '%Y.%m.%d %T') updateTime
         FROM orders w
