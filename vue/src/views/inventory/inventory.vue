@@ -128,14 +128,14 @@
   </div>
         </el-form-item>
         <el-form-item label="出库数量">
-          <el-input type="text" v-model="inventoryadmin.reduce_num" >
+          <el-input type="text" disabled v-model="inventoryadmin.reduce_num" >
           </el-input>
         </el-form-item>
         <el-form-item label="收入资金">
            <el-tag type="success" v-if="inventoryadmin.goods_price!=''&&inventoryadmin.reduce_num!=''">{{inventoryadmin.goods_price*inventoryadmin.reduce_num}}元</el-tag>
         </el-form-item>
          <el-form-item label="入库数量">
-          <el-input type="text" v-model="inventoryadmin.add_num">
+          <el-input type="text" disabled v-model="inventoryadmin.add_num">
           </el-input>
         </el-form-item>
         <el-form-item label="支出资金">
@@ -143,7 +143,7 @@
    
         </el-form-item>
          <el-form-item label="报废数量">
-          <el-input type="text" v-model="inventoryadmin.scrap_num">
+          <el-input type="text" disabled v-model="inventoryadmin.scrap_num">
           </el-input>
         </el-form-item>
          <el-form-item label="报废资金">
@@ -303,8 +303,27 @@
       selectDateTime(){
         this.inventoryadmin.start_time=this.dateTime[0];
         this.inventoryadmin.end_time=this.dateTime[1];
-         
-         console.log( this.inventoryadmin)
+          console.log( this.inventoryadmin)
+          //查询列表
+        if (!this.hasPerm('order:list')) {
+          return
+        }
+        this.listLoading = true;
+        this.api({
+          url: "/order/orderMsg",
+          method: "get",
+          params: this.inventoryadmin
+        }).then(data => {
+          this.inventoryadmin.reduce_num=data.reduce_num;
+          this.inventoryadmin.scrap_num=data.scrap_num;
+          this.inventoryadmin.add_num=data.add_num;
+          console.log(data);
+           this.listLoading = false;
+        })
+
+       
+
+
       },
       changeGoods(index){
         this.inventoryadmin.goods_id=index.id;

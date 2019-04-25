@@ -60,13 +60,20 @@
       <el-table-column align="center" prop="company_phone" label="联系方式" style="width: 60px;"></el-table-column>
       <el-table-column align="center" prop="user_name" label="操作人" style="width: 60px;"></el-table-column>
       <el-table-column align="center" prop="marks" label="备注" style="width: 60px;"></el-table-column>
-      <el-table-column align="center" prop="goods_type" label="类型" style="width: 60px;">
+      <el-table-column align="center" prop="goods_type" label="订单类型" style="width: 60px;">
      
        <template slot-scope="scope">
        <el-tag type="success" v-show="scope.row.order_type==0">入库</el-tag>
          <el-tag type="success" v-show="scope.row.order_type==1">出库</el-tag>
           <el-tag type="success" v-show="scope.row.order_type==2">报废</el-tag>
            <el-tag type="success" v-show="scope.row.order_type==3">缺货</el-tag>
+        </template>
+
+</el-table-column>
+<el-table-column align="center" prop="goods_type" label="订单凭证" style="width: 60px;">
+     
+       <template slot-scope="scope">
+      <el-button type="success"  size="mini" icon="edit" @click="showOrder(scope.row)" >查看凭证</el-button>
         </template>
 
 </el-table-column>
@@ -83,8 +90,9 @@
       <el-table-column align="center" prop="marks" label="备注" style="width: 60px;"></el-table-column>
       <el-table-column align="center" label="管理" width="200" v-if="hasPerm('order:update')">
         <template slot-scope="scope">
-          <el-button type="warning" icon="edit" v-if="scope.row.order_type==3" @click="showUpdate(scope.$index)">待补货</el-button>
-          <el-button type="primary" icon="edit" disabled v-else @click="showUpdate(scope.$index)">已处理</el-button>
+          <el-button type="warning" size="mini" icon="edit" v-if="scope.row.order_type==3" @click="showUpdate(scope.$index)">待补货</el-button>
+           <el-button type="success"  size="mini" icon="edit" v-else disabled>已处理</el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -97,8 +105,9 @@
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
+    <!-- 补发货弹窗提醒 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
+      <el-form class="small-space" :model="order" label-position="left" label-width="60px"
                style='width: 300px; margin-left:50px;'>
                <el-form-item label="">
           <el-tag type="danger">请确保货物库存充足，否则将补货失败</el-tag>
@@ -114,6 +123,27 @@
         <el-button type="primary"  @click="updateOrder">补发</el-button>
       </div>
     </el-dialog>
+       <!-- 凭证界面 -->
+    <el-dialog title="订单凭证" :visible.sync="dialogFormVisible1" width="300px">
+      <el-form class="small-space" :model="tempOrder" label-position="left" label-width="60px"
+               style='width: 300px; margin-left:10px;'>
+               <el-form-item label="">
+                 <div style=""><el-tag type="danger">仓库管理员</el-tag>:&nbsp;&nbsp;{{this.tempOrder.user_name}} <br> 确认结果:&nbsp;&nbsp;  <el-tag type="success">已确认</el-tag><br></div>
+          <div> <el-tag type="danger">单位/公司</el-tag>:&nbsp;&nbsp;{{this.tempOrder.company_name}} <br>确认结果:&nbsp;&nbsp;  <el-tag type="success">已确认</el-tag><br></div>
+         
+     
+       
+              </el-form-item>
+             
+       
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible1 = false">确认</el-button>
+    
+      </div>
+    </el-dialog>
+
+    
   </div>
 </template>
 <script>
@@ -148,14 +178,21 @@
           marks:""
         },
         dialogStatus: 'create',
-        dialogFormVisible: false,
+        dialogFormVisible: false,//补货窗口
+        dialogFormVisible1:false,//凭证页面
+   
         textMap: {
           update: '编辑',
           create: '创建文章'
         },
-        tempArticle: {
-          id: "",
-          content: ""
+        tempOrder: {
+           id:"",
+          user_name:"",
+          company_name:"",
+          goods_id:"",
+          goods_num:"",
+          orderType:"",
+          marks:""
         }
       }
     },
@@ -163,6 +200,12 @@
       this.getList();
     },
     methods: {
+     showOrder(index) {
+       this.dialogFormVisible1=true;
+       this.tempOrder.user_name=index.user_name;
+       this.tempOrder.company_name=index.company_name;
+        
+      },
       importExcel(){
        this.api({
           url: "/excel/getUser",
@@ -259,7 +302,7 @@
         this.getList()
       },
       updateOrder() {
-        //修改文章
+        //修改订单类型
         this.api({
           url: "/order/updateOrder",
           method: "post",

@@ -403,12 +403,14 @@
         })
       },
       adminGoods(index){
+this.order_type="";
      this.goodsOrder.user_name=this.user.nickname;
      this.goodsOrder.user_id=this.user.userId;
      this.goodsOrder.goods_name=index.goods_name;
      this.goodsOrder.goods_price=index.goods_price;
      this.goodsOrder.goods_totalNum=index.goods_num;
      this.goodsOrder.goods_id=index.id;
+    
      this.dialogGoodsVisible=true;
       }
     }
