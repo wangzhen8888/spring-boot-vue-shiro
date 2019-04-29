@@ -101,7 +101,7 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 新增盘点记录弹窗 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增盘点记录" :visible.sync="dialogFormVisible">
       <el-form class="small-space" :model="inventoryadmin"  label-position="left" label-width="80px"
                style='width: 600px; margin-left:50px;'>
         <el-form-item label="选择货物" prop="goods_name">
@@ -128,7 +128,7 @@
   </div>
         </el-form-item>
         <el-form-item label="出库数量">
-          <el-input type="text" disabled v-model="inventoryadmin.reduce_num" >
+          <el-input type="text" disabled v-model="inventoryadmin.reduce_num"  >
           </el-input>
         </el-form-item>
         <el-form-item label="收入资金">
@@ -158,7 +158,7 @@
     </el-dialog>
 
   <!-- 选择货物弹窗 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogGoodsVisible">
+    <el-dialog title="选择货物" :visible.sync="dialogGoodsVisible">
       <el-table :data="goodsList" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
               highlight-current-row>
       <el-table-column align="center" label="序号" width="80">
@@ -246,12 +246,7 @@
         dialogStatus: 'create',
         dialogFormVisible: false,
         dialogGoodsVisible:false,
-        textMap: {
-          update: '编辑',
-          create: '创建文章'
-
-
-        },
+        
         temp: {
           id: "",
           content: "未选择"
