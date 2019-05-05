@@ -20,14 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Alemand
- * @since 2018/3/24
- */
+
 @Service
 public class ResolveExcelImpl implements ResolveExcel {
 

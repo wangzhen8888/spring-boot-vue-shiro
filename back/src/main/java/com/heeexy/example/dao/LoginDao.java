@@ -4,9 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * @author: hxy
  * @description: 登录相关dao
- * @date: 2017/10/24 11:02
+ * @date:
  */
 public interface LoginDao {
     /**

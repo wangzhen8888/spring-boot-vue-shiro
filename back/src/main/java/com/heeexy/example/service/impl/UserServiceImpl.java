@@ -1,5 +1,6 @@
 package com.heeexy.example.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.dao.UserDao;
 import com.heeexy.example.entity.ReqImportClient;
@@ -22,11 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * @author: hxy
- * @description: 用户/角色/权限
- * @date: 2017/11/2 10:18
- */
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -63,6 +60,7 @@ public class UserServiceImpl implements UserService {
         System.out.println(list);
         return CommonUtil.successPage(jsonObject, list, count);
     }
+
     /**
      * 查询可以被选择为社长的列表
      *
@@ -77,6 +75,7 @@ public class UserServiceImpl implements UserService {
         System.out.println(list);
         return CommonUtil.successPage(jsonObject, list, count);
     }
+
     /**
      * 解析Excel
      * 通过excel导入用户
@@ -124,7 +123,7 @@ public class UserServiceImpl implements UserService {
                 int lastRowNum = sheet.getLastRowNum();
                 //从第一行开始第一行一般是标题
                 for (int j = 1; j <= lastRowNum; j++) {
-                    json=new JSONObject();
+                    json = new JSONObject();
                     Row row = sheet.getRow(j);
                     ReqImportClient reqImportClient = new ReqImportClient();
                     //获取电话单元格
@@ -136,7 +135,7 @@ public class UserServiceImpl implements UserService {
                         if (!matche) {
                             break;
                         }
-                        json.put("phone",longName);
+                        json.put("phone", longName);
                     }
                     //学号
                     if (row.getCell(1) != null) {
@@ -145,26 +144,37 @@ public class UserServiceImpl implements UserService {
                         if (stuNum.replace("", "").length() != StuNumWardLength) {
                             break;
                         }
-                        json.put("stuNum",stuNum);
+                        json.put("stuNum", stuNum);
                     }
                     //姓名
                     if (row.getCell(2) != null) {
                         row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
                         String userName = row.getCell(2).getStringCellValue();
-                        if (null==userName  || ""==userName) {
+                        if (null == userName || "" == userName) {
                             break;
                         }
-                        json.put("nickName",userName);
+                        json.put("nickName", userName);
                     }
                     //遍历班级
                     if (row.getCell(3) != null) {
                         row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
                         String gradeClass = row.getCell(3).getStringCellValue();
-                        if (gradeClass == null || ""==gradeClass) {
+                        if (gradeClass == null || "" == gradeClass) {
                             break;
                         }
-                        json.put("class",gradeClass);
+                        json.put("class", gradeClass);
                     }
+                    //查询当前学生角色的role_id
+                    JSONObject role=new JSONObject();
+                    role.put("role_name","学生");
+                    JSONObject stuJson= userDao.getStuRole(role);
+                    if(stuJson.isEmpty()){
+                        JSONObject msg=new JSONObject();
+                        msg.put("code","1");
+                        msg.put("msg","导入失败，请先创建学生角色");
+                        return  CommonUtil.successJson(msg);
+                    }
+                    json.put("role_id",stuJson.getString("id"));
                     list.add(json);
                 }
             }
@@ -344,5 +354,23 @@ public class UserServiceImpl implements UserService {
         userDao.removeRole(jsonObject);
         userDao.removeRoleAllPermission(jsonObject);
         return CommonUtil.successJson();
+    }
+     //根据传入的角色名称获取对应的角色id
+    @Override
+    public JSONObject getStuRole(JSONObject jsonObject) {
+
+
+
+        JSONObject stuJson= userDao.getStuRole(jsonObject);
+        JSONObject msg=new JSONObject();
+        if(null==stuJson||stuJson.isEmpty()){
+
+            msg.put("code","1");
+            msg.put("msg","更新失败，删除社团请保证有"+jsonObject.getString("role_name")+"角色");
+            return  CommonUtil.successJson(msg);
+        }
+        jsonObject.put("id",stuJson.getString("id"));
+        msg.put("code","0");
+        return msg;
     }
 }

@@ -10,14 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Alemand
- * @since 2018/3/19
- */
+
+
 @RestController
 @RequestMapping("/resolve")
 public class ResolveExcelController {

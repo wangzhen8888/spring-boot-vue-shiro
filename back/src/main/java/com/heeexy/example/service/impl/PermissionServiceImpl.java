@@ -10,11 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-/**
- * @author: hxy
- * @description:
- * @date: 2017/10/30 13:15
- */
+
 @Service
 public class PermissionServiceImpl implements PermissionService {
     private Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);

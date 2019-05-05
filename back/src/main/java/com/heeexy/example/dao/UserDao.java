@@ -6,9 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * @author: hxy
  * @description: 用户/角色/权限
- * @date: 2017-11-14 15:08:45
+ * @date:
  */
 public interface UserDao {
     /**
@@ -136,6 +135,13 @@ public interface UserDao {
      * @return
      */
     JSONObject getRoleAllInfo(JSONObject jsonObject);
+
+    /**
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject getStuRole(JSONObject jsonObject);
 
     /**
      * 删除角色

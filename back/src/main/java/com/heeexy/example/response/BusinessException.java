@@ -1,7 +1,7 @@
 package com.heeexy.example.response;
 
 /**
- * Created by guocai.zhang on 16/5/29.
+ *
  */
 public class BusinessException extends Exception {
 

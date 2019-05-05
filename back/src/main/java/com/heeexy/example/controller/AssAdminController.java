@@ -28,7 +28,7 @@ public class AssAdminController {
      * @param request
      * @return
      */
-    @RequiresPermissions("assAdmin:list")
+//    @RequiresPermissions("assAdmin:list")
     @PostMapping("/listActivity")
     public JSONObject listActivity(HttpServletRequest request) {
         return assAdminService.listActivity(CommonUtil.request2Json(request));
@@ -40,7 +40,7 @@ public class AssAdminController {
      * @param request
      * @return
      */
-    @RequiresPermissions("assAdmin:add")
+//    @RequiresPermissions("assAdmin:add")
     @PostMapping("/createActivity")
     public JSONObject createActivity(HttpServletRequest request) {
         return assAdminService.createActivity(CommonUtil.request2Json(request));
@@ -51,7 +51,7 @@ public class AssAdminController {
      * @param request
      * @return
      */
-    @RequiresPermissions("assAdmin:admin")
+//    @RequiresPermissions("assAdmin:admin")
     @PostMapping("/updateActivity")
     public JSONObject updateActivity(HttpServletRequest request) {
         return assAdminService.updateActivity(CommonUtil.request2Json(request));
@@ -62,7 +62,7 @@ public class AssAdminController {
      * @param request
      * @return
      */
-    @RequiresPermissions("assAdmin:list")
+//    @RequiresPermissions("assAdmin:list")
     @PostMapping("/listAssUser")
     public JSONObject listAssUser(HttpServletRequest request) {
         return assAdminService.listAssUser(CommonUtil.request2Json(request));
@@ -73,7 +73,7 @@ public class AssAdminController {
      * @param request
      * @return
      */
-    @RequiresPermissions("assAdmin:agree")
+//    @RequiresPermissions("assAdmin:agree")
     @PostMapping("/agreeAssUser")
     public JSONObject agreeAssUser(HttpServletRequest request) {
         return assAdminService.agreeAssUser(CommonUtil.request2Json(request));

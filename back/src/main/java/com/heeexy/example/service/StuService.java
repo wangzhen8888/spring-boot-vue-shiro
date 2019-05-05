@@ -3,14 +3,14 @@ package com.heeexy.example.service;
 import com.alibaba.fastjson.JSONObject;
 
 
-public interface ArticleService {
+public interface StuService {
     /**
      * 新增文章
      *
      * @param jsonObject
      * @return
      */
-    JSONObject addArticle(JSONObject jsonObject);
+    JSONObject addStuAssociation(JSONObject jsonObject);
     /**
      * 批量新增文章
      *
@@ -25,7 +25,7 @@ public interface ArticleService {
      * @param jsonObject
      * @return
      */
-    JSONObject listArticle(JSONObject jsonObject);
+    JSONObject listStuAssociation(JSONObject jsonObject);
 
     /**
      * 更新文章

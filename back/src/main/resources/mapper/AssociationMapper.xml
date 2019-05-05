@@ -8,32 +8,66 @@
   </delete>
   <!--新增社团-->
   <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
-    insert into association ( name, details,simple_detail,user_id
-      )
-    values ( #{name}, #{details},#{simple_detail},#{user_id}
-      )
+    insert into association
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null and  name!=''">
+        name,
+      </if>
+      <if test="details != null and  details!=''">
+        details
+      </if>
+      <if test="simple_detail != null and  simple_detail!=''">
+        ,simple_detail
+      </if>
+      <if test="user_id != null and  user_id!=''">
+        ,user_id
+      </if>
+      <if test="user_name != null and  user_name!=''">
+        ,user_name
+      </if>
+     </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null and  name!=''">
+        #{name}
+      </if>
+      <if test="details != null and  details!=''">
+        ,#{details}
+      </if>
+      <if test="simple_detail != null and  simple_detail!=''">
+        ,#{simple_detail}
+      </if>
+      <if test="user_id != null and  user_id!=''">
+        ,#{user_id}
+      </if>
+      <if test="user_name != null and  user_name!=''">
+        ,#{user_name}
+      </if>
+
+   </trim>
+
   </insert>
   <!--获取社团数量-->
-  <select id="countAssociation" resultType="Integer">
+  <select id="countAssociation" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
     SELECT count(0)
     FROM association a
     WHERE a.delete_status = '1' AND a.is_open='1'
   </select>
   <!--获取社团详情-->
-  <select id="getAssociation" resultType="com.alibaba.fastjson.JSONObject">
+  <select id="getAssociation" parameterType="com.alibaba.fastjson.JSONObject"  resultType="com.alibaba.fastjson.JSONObject">
     SELECT a.*
     FROM association a
     WHERE a.delete_status=1 and a.id=#{id}
 
   </select>
-  <select id="getUserInfo" resultType="com.alibaba.fastjson.JSONObject">
+  <select id="getUserInfo" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
     select u.nickname,u.class from sys_user  u where u.delete_status='1' and u.id=#{user_id}
 
   </select>
   <!--获取社团列表-->
-  <select id="listAssociation" resultType="com.alibaba.fastjson.JSONObject">
+  <select id="listAssociation" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
     SELECT
-       w.id ,w.name,w.details,w.activity_id,w.user_id,
+       w.id ,w.name,w.details,w.activity_id,w.user_id,w.user_name,
        date_format(w.create_time, '%Y.%m.%d %T') create_time,
        date_format(w.update_time, '%Y.%m.%d %T') update_time,
        w.simple_detail,w.is_open,w.delete_status
@@ -44,17 +78,22 @@
     LIMIT #{offSet}, #{pageRow}
   </select>
   <!--更新社团信息-->
-  <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject">
+  <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject" >
     UPDATE association
     SET
     name=#{name},
     details=#{details},
-    simple_detail=#{simple_detail},
+    simple_detail=#{simple_detail}
     <if test="delete_status !='' and delete_status !=null">
-      delete_status=#{delete_status，jdbcType=INTEGER},
+      ,delete_status=#{delete_status}
+    </if>
+    <if test="user_id !='' and user_id !=null">
+      ,user_id=#{user_id}
+    </if>
+    <if test="user_name !='' and user_name !=null">
+      ,user_name=#{user_name}
     </if>
 
-    user_id=#{user_id}
     WHERE id = #{id}
   </update>
   <!--<insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >-->
@@ -64,12 +103,15 @@
   <update id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject">
     update sys_user
     set
+    <if test="role_id !=null and role_id!=''">
+      role_id=#{role_id},
+    </if>
     is_choose=#{is_choose}
     where id=#{old_user_id}
 
   </update>
 
-  <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject">
+  <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
     SELECT count(0)
     FROM ass_users au
     WHERE au.delete_status = 1 AND  au.association_id=#{id}

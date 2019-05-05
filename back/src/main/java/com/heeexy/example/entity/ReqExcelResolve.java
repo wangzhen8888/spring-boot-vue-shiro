@@ -7,14 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Alemand
- * @since 2018/3/20
- */
+
 public class ReqExcelResolve implements Serializable {
     /**
      * 存在用户

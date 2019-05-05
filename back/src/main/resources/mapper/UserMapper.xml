@@ -245,14 +245,15 @@
     </select>
     <!--批量导入-->
     <insert id="importUser" parameterType="java.util.List">
-        insert into sys_user (id,phone, stu_num, class,username,nickname) values
+        insert into sys_user (id,phone, stu_num, class,username,nickname,role_id) values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.stuNum},
             #{item.phone},
             #{item.stuNum},
             #{item.class},
             #{item.stuNum},
-            #{item.nickName,})
+            #{item.nickName,},
+            #{item.role_id,})
 
         </foreach>
 
@@ -262,6 +263,9 @@
         stu_num=VALUES (stu_num),
         class=VALUES (class)
     </insert>
+    <select id="getStuRole" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT  s.id FROM sys_role s WHERE delete_status='1'AND role_name=#{role_name}
+    </select>
 
 
 </mapper>

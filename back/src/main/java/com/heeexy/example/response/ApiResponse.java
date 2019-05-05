@@ -2,7 +2,7 @@ package com.heeexy.example.response;
 
 
 /**
- * Created by guocai.zhang on 16/5/28.
+ *
  */
 public class ApiResponse {
 

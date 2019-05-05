@@ -12,9 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author: hxy
  * @description: 用户/角色/权限相关controller
- * @date: 2017/11/2 10:19
+ * @date:
  */
 @RestController
 @RequestMapping("/user")
@@ -28,7 +27,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequiresPermissions("user:list")
+//    @RequiresPermissions("user:list")
     @GetMapping("/list")
     public JSONObject listUser(HttpServletRequest request) {
         return userService.listUser(CommonUtil.request2Json(request));
@@ -39,7 +38,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequiresPermissions("user:list")
+//    @RequiresPermissions("user:list")
     @GetMapping("/assList")
     public JSONObject assListUser(HttpServletRequest request) {
         return userService.assListUser(CommonUtil.request2Json(request));
@@ -50,27 +49,27 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequiresPermissions("user:upload")
+//    @RequiresPermissions("user:upload")
     @PostMapping("/upload")
     public JSONObject importUser(MultipartFile file) {
         return userService.importUser(file);
     }
 
-    @RequiresPermissions("user:add")
+//    @RequiresPermissions("user:add")
     @PostMapping("/addUser")
     public JSONObject addUser(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "username, password, nickname,   roleId");
         return userService.addUser(requestJson);
     }
 
-    @RequiresPermissions("user:update")
+//    @RequiresPermissions("user:update")
     @PostMapping("/updateUser")
     public JSONObject updateUser(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, " nickname,   roleId, deleteStatus, userId");
         return userService.updateUser(requestJson);
     }
 
-    @RequiresPermissions(value = {"user:add", "user:update"}, logical = Logical.OR)
+//    @RequiresPermissions(value = {"user:add", "user:update"}, logical = Logical.OR)
     @GetMapping("/getAllRoles")
     public JSONObject getAllRoles() {
         return userService.getAllRoles();
@@ -81,7 +80,7 @@ public class UserController {
      *
      * @return
      */
-    @RequiresPermissions("role:list")
+//    @RequiresPermissions("role:list")
     @GetMapping("/listRole")
     public JSONObject listRole() {
         return userService.listRole();
@@ -92,7 +91,7 @@ public class UserController {
      *
      * @return
      */
-    @RequiresPermissions("role:list")
+//    @RequiresPermissions("role:list")
     @GetMapping("/listAllPermission")
     public JSONObject listAllPermission() {
         return userService.listAllPermission();
@@ -103,7 +102,7 @@ public class UserController {
      *
      * @return
      */
-    @RequiresPermissions("role:add")
+//    @RequiresPermissions("role:add")
     @PostMapping("/addRole")
     public JSONObject addRole(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "roleName,permissions");
@@ -115,7 +114,7 @@ public class UserController {
      *
      * @return
      */
-    @RequiresPermissions("role:update")
+//    @RequiresPermissions("role:update")
     @PostMapping("/updateRole")
     public JSONObject updateRole(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "roleId,roleName,permissions");
@@ -128,7 +127,7 @@ public class UserController {
      * @param requestJson
      * @return
      */
-    @RequiresPermissions("role:delete")
+//    @RequiresPermissions("role:delete")
     @PostMapping("/deleteRole")
     public JSONObject deleteRole(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "roleId");

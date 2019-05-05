@@ -6,9 +6,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * @author: hxy
  * @description: 设置首页
- * @date: 2017/10/24 10:28
+ * @date:
  */
 @Configuration
 public class DefaultView extends WebMvcConfigurerAdapter {

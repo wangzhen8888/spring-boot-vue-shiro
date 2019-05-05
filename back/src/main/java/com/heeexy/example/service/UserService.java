@@ -4,11 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.response.BusinessException;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * @author: hxy
- * @description: 用户/角色/权限
- * @date: 2017/11/2 10:18
- */
 public interface UserService {
     /**
      * 用户列表
@@ -95,4 +90,7 @@ public interface UserService {
      * @return
      */
     JSONObject deleteRole(JSONObject jsonObject);
+
+    JSONObject getStuRole(JSONObject jsonObject);
+
 }

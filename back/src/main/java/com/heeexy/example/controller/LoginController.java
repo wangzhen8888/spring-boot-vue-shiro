@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author: hxy
  * @description: 登录相关Controller
- * @date: 2017/10/24 10:33
+ * @date:
  */
 @RestController
 @RequestMapping("/login")

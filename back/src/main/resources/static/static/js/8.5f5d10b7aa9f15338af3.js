@@ -1,1 +1,0 @@
-webpackJsonp([8],{"5LMo":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var s={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{staticClass:"shetuan1"},[this._v("\n    测试1\n")])},staticRenderFns:[]},l=n("VU/8")(null,s,!1,null,null,null);t.default=l.exports}});

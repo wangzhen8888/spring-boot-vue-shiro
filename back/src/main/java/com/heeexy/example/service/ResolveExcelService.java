@@ -7,14 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Alemand
- * @since 2018/3/19
- */
+
 public interface ResolveExcelService {
 
 

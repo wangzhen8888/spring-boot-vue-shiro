@@ -25,14 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Alemand
- * @since 2018/3/19
- */
+
 @Service("resolveExcelServiceImpl")
 public class ResolveExcelServiceImpl implements ResolveExcelService {
     /**

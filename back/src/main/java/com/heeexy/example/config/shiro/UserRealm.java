@@ -17,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 
 /**
- * @author: hxy
  * @description: 自定义Realm
- * @date: 2017/10/24 10:06
+ * @date:
  */
 public class UserRealm extends AuthorizingRealm {
     private Logger logger = LoggerFactory.getLogger(UserRealm.class);

@@ -18,9 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author: hxy
  * @description: shiro配置类
- * @date: 2017/10/24 10:10
+ * @date:
  */
 @Configuration
 public class ShiroConfiguration {

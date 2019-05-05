@@ -6,14 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 
-/**
- * <p>
- * 类说明
- * </p>
- *
- * @author Shawn
- * @since 2018/3/19
- */
+
 public class ResImportClient implements Serializable {
     @SerializedName("clientID")
     @Expose

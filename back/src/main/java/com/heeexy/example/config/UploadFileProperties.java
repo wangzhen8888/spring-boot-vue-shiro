@@ -12,8 +12,7 @@ import javax.servlet.MultipartConfigElement;
  * 类说明
  * </p>
  *
- * @author Alemand
- * @since 2018/3/19
+ * @since
  */
 @Configuration
 public class UploadFileProperties extends WebMvcConfigurerAdapter {

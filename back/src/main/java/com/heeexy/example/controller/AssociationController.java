@@ -25,7 +25,7 @@ public class AssociationController {
  * @param requestJson
  * @return
  */
-    @RequiresPermissions("association:add")
+//    @RequiresPermissions("association:add")
     @PostMapping("/addAssociation")
     public JSONObject addAssociation(@RequestBody JSONObject requestJson) {
         CommonUtil.hasAllRequired(requestJson, "name,details");
@@ -37,7 +37,7 @@ public class AssociationController {
      * @param request
      * @return
      */
-    @RequiresPermissions("association:list")
+//    @RequiresPermissions("association:list")
     @GetMapping("/listAssociation")
     public JSONObject listAssociation(HttpServletRequest request) {
         return associationService.listAssociation(CommonUtil.request2Json(request));
@@ -47,11 +47,11 @@ public class AssociationController {
      * @param request
      * @return
      */
-    @RequiresPermissions("association:list")
+//    @RequiresPermissions("association:list")
     @PostMapping("/updateAssociation")
     public  JSONObject updateAssociation(@RequestBody JSONObject requestJson){
 
-        CommonUtil.hasAllRequired(requestJson,"name, details,simple_detail,user_id" );
+        CommonUtil.hasAllRequired(requestJson,"name, details,simple_detail" );
         return associationService.updateAssociation(requestJson);
     }
 
@@ -60,11 +60,11 @@ public class AssociationController {
      * @param request
      * @return
      */
-    @RequiresPermissions("association:list")
+//    @RequiresPermissions("association:list")
     @PostMapping("/getAssociation")
     public  JSONObject getAssociation(@RequestBody JSONObject requestJson){
 
-//        CommonUtil.hasAllRequired(requestJson,"id" );
+       //        CommonUtil.hasAllRequired(requestJson,"id" );
         return associationService.getAssociation(requestJson);
     }
 

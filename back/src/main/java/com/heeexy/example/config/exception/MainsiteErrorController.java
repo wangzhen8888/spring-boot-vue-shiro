@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * @author: hxy
  * @description: 系统错误拦截, 主要是针对404的错误
- * @date: 2017/10/24 10:31
+ * @date:
  */
 @Controller
 public class MainsiteErrorController implements ErrorController {

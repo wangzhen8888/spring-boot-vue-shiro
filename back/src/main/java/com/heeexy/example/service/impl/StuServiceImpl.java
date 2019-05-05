@@ -2,7 +2,9 @@ package com.heeexy.example.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.dao.ArticleDao;
+import com.heeexy.example.dao.StuDao;
 import com.heeexy.example.service.ArticleService;
+import com.heeexy.example.service.StuService;
 import com.heeexy.example.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,27 +15,37 @@ import java.util.List;
 
 
 @Service
-public class ArticleServiceImpl implements ArticleService {
+public class StuServiceImpl implements StuService {
 
     @Autowired
-    private ArticleDao articleDao;
+    private StuDao stuDao;
 
     /**
-     * 新增文章
+     * 加入社团
      *
      * @param jsonObject
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public JSONObject addArticle(JSONObject jsonObject) {
-        int i=0;
-        while (i==100000){
-            articleDao.addArticle(jsonObject);
-            i++;
+    public JSONObject addStuAssociation(JSONObject jsonObject) {
+        //判断该学生是否是该社团的社长
+        int adminNum=stuDao.countIsAdminAssociation(jsonObject);
+        JSONObject msg=new JSONObject();
+        if(0!=adminNum){
+            msg.put("msg","你就是本社团的社长，无需参加");
+            return  CommonUtil.successJson(msg);
+        }
+        //判断该学生是否已经申请加入过该社团
+        int stuNum=stuDao.countIsStuAssociation(jsonObject);
+        if(0!=stuNum){
+            msg.put("msg","你已参加过该社团，无需重复参加");
+            return  CommonUtil.successJson(msg);
         }
 
-        return CommonUtil.successJson();
+        msg.put("msg","你已成功发送入团申请，请耐心等待社长审批");
+        stuDao.addStuAssociation(jsonObject);
+        return CommonUtil.successJson(msg);
     }
     /**
      *批量新增文章
@@ -55,22 +67,23 @@ public class ArticleServiceImpl implements ArticleService {
             i++;
         }
 
-        articleDao.batchddArticle(list);
+       stuDao.batchddArticle(list);
        long end = System.currentTimeMillis();
        System.out.println("批量插入10000条数据时间为---------------" + (start - end) +"秒"+ "---------------");
         return CommonUtil.successJson();
     }
     /**
-     * 文章列表
+     * 所加入社团列表
      *
      * @param jsonObject
      * @return
      */
     @Override
-    public JSONObject listArticle(JSONObject jsonObject) {
+    public JSONObject listStuAssociation(JSONObject jsonObject) {
+
         CommonUtil.fillPageParam(jsonObject);
-        int count = articleDao.countArticle(jsonObject);
-        List<JSONObject> list = articleDao.listArticle(jsonObject);
+        int count = stuDao.countStuAssociation(jsonObject);
+        List<JSONObject> list = stuDao.listStuAssociation(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);
     }
 
@@ -83,7 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public JSONObject updateArticle(JSONObject jsonObject) {
-        articleDao.updateArticle(jsonObject);
+        stuDao.updateArticle(jsonObject);
         return CommonUtil.successJson();
     }
 }
