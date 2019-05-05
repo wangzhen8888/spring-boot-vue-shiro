@@ -23,7 +23,7 @@
       </el-col>
       <el-col :span="6">
         <el-container  style="height: 120px;width:600px; ">
-  <el-aside style="width:120px;"><div><el-tag style="text-align: center;" type="primary">选择学生账号文件</el-tag></div></el-aside>
+  <el-aside style="width:120px;"><div><el-tag style="text-align: center;" type="primary" v-if="hasPerm('user:upload')">选择学生账号文件</el-tag></div></el-aside>
   <el-main style="width:300px"><div style="float:left">
         <el-upload
           class="upload-demo"
@@ -34,19 +34,19 @@
           :before-upload="beforeUpload"
         >
         
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <a href="./static/学生账号模板.xls" rel="external nofollow" download="学生账号模板.xls">
-            <el-button size="small" type="success">下载模板</el-button>
+          <el-button slot="trigger" size="small" type="primary" v-if="hasPerm('user:upload')">选取文件</el-button>
+          <a href="./static/学生账号模板.xls" rel="external nofollow" download="学生账号模板.xls" v-if="hasPerm('user:upload')">
+            <el-button size="small" type="success" v-if="hasPerm('user:upload')">下载模板</el-button>
           </a>
 
 
-          <div slot="tip" class="el-upload__tip">只能上传excel文件，且不超过5MB</div>
-          <div slot="tip" class="el-upload-list__item-name">{{fileName}}</div>
+          <div slot="tip" class="el-upload__tip" v-if="hasPerm('user:upload')">只能上传excel文件，且不超过5MB</div>
+          <div slot="tip" class="el-upload-list__item-name" v-if="hasPerm('user:upload')">{{fileName}}</div>
         </el-upload>
         </div>
        <!-- <el-button @click="visible = false">取消</el-button> -->
        <div>
-        <el-button style="float:left" type="primary" @click="submitUpload()">开始上传</el-button>
+        <el-button style="float:left" type="primary" @click="submitUpload()" v-if="hasPerm('user:upload')">开始上传</el-button>
         </div></el-main>
 </el-container>
         
@@ -238,6 +238,7 @@ export default {
           });
 
       });
+      this.getList();
     },
     getAllRoles() {
       this.api({

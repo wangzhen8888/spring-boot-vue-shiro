@@ -55,6 +55,16 @@ export const asyncRouterMap = [{
         },
         menu: 'article'
       },
+      {
+        path: 'stuAssociation',
+        name: '我的社团',
+        component: _import('stuAssociation/stuAssociation'),
+        meta: {
+          title: '我的社团',
+          icon: 'example'
+        },
+        menu: 'stuAssociation'
+      },
      
       
       {

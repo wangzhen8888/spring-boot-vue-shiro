@@ -23,7 +23,7 @@
       highlight-current-row
     >
       <template slot="empty">
-        此时间段没有社团开放申请
+        没有社团，请创建
         <img class="data-pic" src="#" alt>
       </template>
       <el-table-column align="center" label="序号" width="80">
@@ -32,10 +32,25 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="name" label="社团名称" style="width: 30px;"></el-table-column>
+      
       <el-table-column align="center" prop="simple_detail" label="社团简介" style="width: 60px;"></el-table-column>
       <el-table-column align="center" label="创建时间" width="150">
         <template slot-scope="scope">
           <span>{{scope.row.create_time}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="社长姓名" width="150">
+        <template slot-scope="scope">
+    
+          <span v-if="scope.row.user_name==''||scope.row.user_name==null">无社长</span>
+          <span v-else>{{scope.row.user_name}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="社长id" width="150">
+        <template slot-scope="scope">
+    
+          <span v-if="scope.row.user_id==''||scope.row.user_id==null">无社长</span>
+          <span v-else>{{scope.row.user_id}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="管理" width="250" v-if="hasPerm('association:admin')">
@@ -125,7 +140,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false,dialogFormVisible1=false">取 消</el-button>
+        <el-button @click="handleClear">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="success" @click="createAssociation">创 建</el-button>
         <el-button type="primary" v-else-if="dialogStatus=='update'" @click="toUpdate">修 改</el-button>
       </div>
@@ -213,7 +228,8 @@ export default {
         update_time:"",
         old_user_id:"",
         user_id:"",
-        is_open:""
+        is_open:"",
+        user_name:""
 
       },
       value9:"",
@@ -241,6 +257,7 @@ export default {
       console.log(row);
       this.association.old_user_id=this.association.user_id;
       this.association.user_id=row.userId;
+      this.association.user_name=row.nickname;
       this.tesTitle="学号:"+row.userId+"-"+"班级:"+row.class;
       this.tes=row.nickname;
       this.detailDialogVisible=false;
@@ -253,6 +270,23 @@ export default {
             done();
           })
           .catch(_ => {});
+      },
+      handleClear(){
+      this.dialogFormVisible = false;
+      this.dialogFormVisible1=false;
+      this.association.id = "";
+      this.association.name = "";
+      this.association.details = "";
+      this.association.simple_detail = "";
+      this.association.create_time="";
+      this.association.delete_status="";
+      this.association.update_time="";
+      this.association.old_user_id="";
+      this.association.user_id="";
+       this.association.is_open="";
+
+
+
       },
       showAdminList(){
        this.getUserList();
@@ -284,9 +318,18 @@ this.association.user_id=this.value9;
     showCreate() {
       // this.getUserList();
       //显示新增对话框
+      this.association.id = "";
       this.association.name = "";
       this.association.details = "";
       this.association.simple_detail = "";
+      this.association.create_time="";
+      this.association.delete_status="";
+      this.association.update_time="";
+      this.association.old_user_id="";
+      this.association.user_id="";
+       this.association.is_open="";
+      
+
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.tes="请选择社长";
@@ -327,10 +370,18 @@ this.association.user_id=this.value9;
       this.delete_status=res.delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+      this.association.old_user_id="";
+      if("无社长"==res.user_id){
+      this.association.user_id="";
+      this.tesTitle="未选择社长";
+      this.tes="未选择社长";
+      }else{
       this.association.user_id=res.user_id;
       this.tesTitle="学号:"+res.user_id+"-"+"班级:"+res.class;
       this.tes=res.userName;
       console.log(this.association)
+      }
+      
       
      
      
