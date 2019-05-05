@@ -1,5 +1,6 @@
 package com.heeexy.example.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
@@ -65,4 +66,18 @@ public interface AssociationDao {
      * @return
      */
     int assUserCount(JSONObject jsonObject);
+
+    /**
+     * 用于选择社长
+     * @param jsonObject
+     * @return
+     */
+   List<JSONObject>  getStuList(JSONObject jsonObject);
+
+    /**
+     * 获取数量
+     * @param jsonObject
+     * @return
+     */
+    int stuCount(JSONObject jsonObject);
 }
