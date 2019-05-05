@@ -317,9 +317,9 @@
      if("first"==tab.name){
       this.getAssUserList();
      }
-     if("second"==tab.name){
-    this.getActivityList();
-     }
+    //  if("second"==tab.name){
+    // this.getActivityList();
+    //  }
       },
       getAssUserList() {
         //查询列表

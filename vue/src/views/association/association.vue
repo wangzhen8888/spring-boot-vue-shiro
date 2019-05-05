@@ -255,12 +255,36 @@ export default {
       },
     handleEdit(index, row) {
       console.log(row);
-      this.association.old_user_id=this.association.user_id;
-      this.association.user_id=row.userId;
+
+      
+      if(undefined==row.user_id){
+        this.association.old_user_id=this.association.user_id;
+        this.association.user_id=row.userId;
+        if(this.association.old_user_id==row.user_id){
+          this.association.user_id="";
+          this.association.old_user_id="";
+
+
+        }
+      
+      }else{
+        this.association.old_user_id=this.association.user_id;
+       this.association.user_id=row.user_id;
+       if(this.association.old_user_id==row.userId){
+          this.association.user_id="";
+          this.association.old_user_id="";
+
+
+        }
+      }
+
+     
       this.association.user_name=row.nickname;
       this.tesTitle="学号:"+row.userId+"-"+"班级:"+row.class;
       this.tes=row.nickname;
       this.detailDialogVisible=false;
+      console.log("社团信息")
+      console.log(this.association)
       
       },
      
@@ -289,8 +313,10 @@ export default {
 
       },
       showAdminList(){
+       
        this.getUserList();
-        this.detailDialogVisible=true
+       this.detailDialogVisible=true
+       
 
       }
       ,
@@ -361,17 +387,18 @@ this.association.user_id=this.value9;
         method: "post",
         data: this.association
       }).then(res=> {
+        console.log("接口结果")
         console.log(res)
       //显示修改对话框
-      this.association.id = res.id;
-      this.association.name = res.name;
-      this.association.details = res.details;
-      this.association.simple_detail = res.simple_detail;
-      this.delete_status=res.delete_status;
+      this.association.id = s.id;
+      this.association.name = s.name;
+      this.association.details = s.details;
+      this.association.simple_detail = s.simple_detail;
+      this.delete_status=s.delete_status;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.association.old_user_id="";
-      if("无社长"==res.user_id){
+      if("无社长"==s.user_id){
       this.association.user_id="";
       this.tesTitle="未选择社长";
       this.tes="未选择社长";
@@ -379,13 +406,13 @@ this.association.user_id=this.value9;
       this.association.user_id=res.user_id;
       this.tesTitle="学号:"+res.user_id+"-"+"班级:"+res.class;
       this.tes=res.userName;
-      console.log(this.association)
       }
       
       
      
      
       this.checkedUser=res.user_id;
+     
       });
 
       // //显示修改对话框
@@ -407,11 +434,14 @@ this.association.user_id=this.value9;
     },
     //获取用户列表
     getUserList(){
+      console.log("测试信息")
+      console.log(this.association)
  //获取用户列表，用于选择社长
      this.api(
        {
-        url: "/user/assList",
-        method: "get",
+        url: "/association/getStuList",
+        method: "post",
+        data:this.association
        }
      ).then(result=>{
        console.log(result.list);
@@ -422,6 +452,7 @@ this.association.user_id=this.value9;
      })
     },
     updateAssociation() {
+      console.log("社团信息11")
       console.log(this.association)
       //修改社团信息
       this.api({
