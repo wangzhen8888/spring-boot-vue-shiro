@@ -72,6 +72,7 @@ public class AssAdminServiceImpl implements AssAdminService {
         //根据社长id获取社团id
         JSONObject json = assAdminDao.getAdminId(jsonObject);
         jsonObject.put("association_id",json.getString("id"));
+        jsonObject.put("association_name",json.getString("name"));
         int num=assAdminDao.createActivity(jsonObject);
         logger.info("创建活动sql执行的返回值为："+String.valueOf(num));
         JSONObject resultJson=new JSONObject();

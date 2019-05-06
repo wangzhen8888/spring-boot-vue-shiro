@@ -5,12 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface StuService {
     /**
-     * 新增文章
+     * 参加社团
      *
      * @param jsonObject
      * @return
      */
     JSONObject addStuAssociation(JSONObject jsonObject);
+    /**
+     * 参加社团活动
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject addAct(JSONObject jsonObject);
     /**
      * 批量新增文章
      *
@@ -20,12 +27,26 @@ public interface StuService {
     JSONObject batchAddArticle(JSONObject jsonObject);
 
     /**
-     * 文章列表
+     * 查询已加入社团列表
      *
      * @param jsonObject
      * @return
      */
     JSONObject listStuAssociation(JSONObject jsonObject);
+    /**
+     * 查询已加入社团的活动列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject actList(JSONObject jsonObject);
+    /**
+     * 查询当前社团下已参加活动的人员列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject actHaveList(JSONObject jsonObject);
 
     /**
      * 更新文章

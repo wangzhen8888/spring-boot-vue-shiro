@@ -45,6 +45,18 @@ public class StuController {
         CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
         return stuService.addStuAssociation(requestJson);
     }
+    /**
+     * 参加社团活动
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:add")
+    @PostMapping("/addAct")
+    public JSONObject addAct(@RequestBody JSONObject requestJson) {
+//        CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
+        return stuService.addAct(requestJson);
+    }
 
     /**
      * 修改文章
@@ -58,5 +70,30 @@ public class StuController {
         CommonUtil.hasAllRequired(requestJson, "id,content");
         return stuService.updateArticle(requestJson);
     }
+    /**
+     * 查询所加入的社团的活动列表
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:update")
+    @PostMapping("/actList")
+    public JSONObject actList(HttpServletRequest request) {
+
+        return stuService.actList(CommonUtil.request2Json(request));
+    }
+    /**
+     * 查询当前社团下所参加的活动记录
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:update")
+    @PostMapping("/actHaveList")
+    public JSONObject actHaveList(HttpServletRequest request) {
+
+        return stuService.actHaveList(CommonUtil.request2Json(request));
+    }
+
 
 }

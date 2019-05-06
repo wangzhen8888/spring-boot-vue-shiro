@@ -2,19 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.heeexy.example.dao.StuDao">
-<!--新增-->
+    <!--加入社团-->
     <insert id="addStuAssociation" parameterType="com.alibaba.fastjson.JSONObject">
         INSERT INTO ass_users
         (user_id,association_name,association_id,user_name) VALUES
             ( #{user_id},#{association_name},#{association_id},#{user_name})
     </insert>
-<!--批量新增-->
+    <!--加入社团活动-->
+    <insert id="addAct" parameterType="com.alibaba.fastjson.JSONObject">
+        INSERT INTO act_ass_user
+        (user_id,user_name,association_name,association_id,activity_name,activity_id) VALUES
+        ( #{user_id},#{user_name},#{association_name},#{association_id},#{activity_name},#{activity_id})
+    </insert>
+    <!--批量新增-->
     <insert id="batchddArticle">
         INSERT INTO article
         (content) VALUES
-        <foreach collection ="list" item="json" separator =",">
+        <foreach collection="list" item="json" separator=",">
             (#{json.content})
-        </foreach >
+        </foreach>
     </insert>
     <!--查询所加入的所有社团的数量-->
     <select id="countStuAssociation" resultType="Integer">
@@ -34,7 +40,7 @@
         FROM association w
         WHERE w.delete_status = 1 AND w.user_id=#{user_id} AND id=#{association_id}
     </select>
-
+    <!--查询所加入的社团-->
     <select id="listStuAssociation" resultType="com.alibaba.fastjson.JSONObject">
         SELECT
         w.id id,
@@ -47,6 +53,93 @@
         WHERE w.delete_status = 1 AND w.user_id=#{user_id}
               ORDER BY w.id DESC
         LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--查询所加入的社团活动列表-->
+    <select id="actList" resultType="com.alibaba.fastjson.JSONObject">
+     SELECT
+	  ac.id,
+	  ac.name,
+	  ac.association_id,
+	  ac.association_name,
+	  ac.details,
+	  date_format(ac.create_time, '%Y.%m.%d %T') createTime,
+	  date_format(ac.update_time, '%Y.%m.%d %T') updateTime,
+	  date_format(ac.start_time, '%Y.%m.%d %T') startTime,
+	  date_format(ac.end_time, '%Y.%m.%d %T') endTime,
+	  ac.is_open
+
+      FROM
+	ass_users au
+	LEFT JOIN activity ac ON au.association_id = ac.association_id
+      WHERE
+	au.user_id = #{user_id}
+	AND au.delete_status = 1
+	AND au.is_accept=1
+    ORDER BY ac.id DESC
+      LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--查询所加入的社团活动数量-->
+    <select id="countActList" resultType="Integer">
+        SELECT
+        ac.id,
+        ac.name,
+        ac.association_id,
+        ac.association_name,
+        ac.details,
+        date_format(ac.create_time, '%Y.%m.%d %T') createTime,
+        date_format(ac.update_time, '%Y.%m.%d %T') updateTime,
+        date_format(ac.start_time, '%Y.%m.%d %T') startTime,
+        date_format(ac.end_time, '%Y.%m.%d %T') endTime,
+        ac.is_open
+
+        FROM
+        ass_users au
+        LEFT JOIN activity ac ON au.association_id = ac.association_id
+        WHERE
+        au.user_id = #{user_id}
+        AND au.delete_status = 1
+        AND au.is_accept=1
+
+    </select>
+    <!--查询所加入的社团活动数量-->
+    <select id="countHaveActList" resultType="Integer">
+        select count(0) from act_ass_user WHERE user_id=#{user_id} and association_id=#{association_id} and activity_id=#{activity_id}
+        
+    </select>
+    <!--查询参加的所有活动-->
+    <select id="actHaveList" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
+        select * from act_ass_user
+        <where>
+            <if test="user_id !=null and user_id !=''">
+                user_id=#{user_id}
+            </if>
+            <if test="association_id !=null and association_id !=''">
+                association_id=#{association_id}
+            </if>
+
+
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offSet}, #{pageRow}
+
+    </select>
+    <!--查询已参加的活动记录数量-->
+    <select id="countActHaveList" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="Integer">
+        select count(0) from act_ass_user
+        <where>
+            <if test="user_id !=null and user_id !=''">
+                user_id=#{user_id}
+            </if>
+            <if test="association_id !=null and association_id !=''">
+                association_id=#{association_id}
+            </if>
+
+
+        </where>
+
+
     </select>
 
     <update id="updateArticle" parameterType="com.alibaba.fastjson.JSONObject">

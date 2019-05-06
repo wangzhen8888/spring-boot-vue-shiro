@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Service
 public class StuServiceImpl implements StuService {
 
-    @Autowired
+    @Resource
     private StuDao stuDao;
 
     /**
@@ -47,6 +48,28 @@ public class StuServiceImpl implements StuService {
         stuDao.addStuAssociation(jsonObject);
         return CommonUtil.successJson(msg);
     }
+
+    /**
+     * 添加社团活动
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject addAct(JSONObject jsonObject) {
+
+        //判断该学生是否参加过该社团
+        int num=stuDao.countHaveActList(jsonObject);
+        JSONObject msg=new JSONObject();
+        if(0!=num){
+            msg.put("msg","你已参加过该活动，无需重复参加");
+            return CommonUtil.successJson(msg);
+        }
+        msg.put("msg","参加成功，感谢你的参与");
+        stuDao.addAct(jsonObject);
+        return CommonUtil.successJson(msg);
+    }
+
     /**
      *批量新增文章
      *
@@ -84,6 +107,35 @@ public class StuServiceImpl implements StuService {
         CommonUtil.fillPageParam(jsonObject);
         int count = stuDao.countStuAssociation(jsonObject);
         List<JSONObject> list = stuDao.listStuAssociation(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
+
+    /**
+     * 所加入社团的活动列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject actList(JSONObject jsonObject) {
+
+        CommonUtil.fillPageParam(jsonObject);
+        int count = stuDao.countActList(jsonObject);
+        List<JSONObject> list = stuDao.actList(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
+    /**
+     * 当前社团下的所参加的列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject actHaveList(JSONObject jsonObject) {
+
+        CommonUtil.fillPageParam(jsonObject);
+        int count = stuDao.countActHaveList(jsonObject);
+        List<JSONObject> list = stuDao.actHaveList(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);
     }
 

@@ -31,7 +31,7 @@
     <!--根据社长id获取社团id-->
     <select id="getAdminId" parameterType="com.alibaba.fastjson.JSONObject"
             resultType="com.alibaba.fastjson.JSONObject">
-        SELECT a.id from association a where a.user_id=#{userId}
+        SELECT a.id,a.name from association a where a.user_id=#{userId}
     </select>
     <!--审批社员入团-->
     <update id="agreeAssUser" parameterType="com.alibaba.fastjson.JSONObject">
@@ -43,9 +43,9 @@
     <!--创建社团活动-->
     <insert id="createActivity" parameterType="com.alibaba.fastjson.JSONObject">
 
-        insert into activity ( name, details,association_id,start_time,end_time,is_open
+        insert into activity ( name, details,association_id,association_name,start_time,end_time,is_open
         )
-        values ( #{name}, #{details},#{association_id},#{start_time},#{end_time},#{is_open}
+        values ( #{name}, #{details},#{association_id},#{association_name},#{start_time},#{end_time},#{is_open}
         )
     </insert>
     <!--更新活动信息-->
