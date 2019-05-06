@@ -1,6 +1,7 @@
 package com.heeexy.example.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.controller.ResolveExcelController;
 import com.heeexy.example.dao.AssociationDao;
@@ -31,7 +32,7 @@ public class AssociationServiceImpl implements AssociationService {
     @Resource
     private UserService userService;
     @Resource
-    private StuDao  stuDao;
+    private StuDao stuDao;
 
 
     /**
@@ -78,6 +79,26 @@ public class AssociationServiceImpl implements AssociationService {
     }
 
     /**
+     * 用于获取选择社长的用户列表
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject getStuList(JSONObject jsonObject) {
+        CommonUtil.fillPageParam(jsonObject);
+        int stuCount = associationDao.stuCount(jsonObject);
+        if (stuCount == 0) {
+
+            return userService.assListUser(jsonObject);
+        } else {
+            List<JSONObject> list = associationDao.getStuList(jsonObject);
+            return CommonUtil.successPage(jsonObject, list, stuCount);
+        }
+
+    }
+
+    /**
      * 更新社团基本信息
      *
      * @param jsonObject
@@ -98,7 +119,7 @@ public class AssociationServiceImpl implements AssociationService {
                 return CommonUtil.successJson(json);
             }
 
-            if ("".equals(jsonObject.getString("user_id"))||jsonObject.getString("user_id")==null){
+            if ("".equals(jsonObject.getString("user_id")) || jsonObject.getString("user_id") == null) {
                 //删除社团
                 associationDao.updateAssociation(jsonObject);
                 json.put("msg", "更新社团信息成功");
@@ -106,12 +127,12 @@ public class AssociationServiceImpl implements AssociationService {
 
             }
 
-                JSONObject roleJson = new JSONObject();
-                roleJson.put("role_name", "学生");
-                JSONObject roJson = userService.getStuRole(roleJson);
-                if ("1".equals(roJson.getString("code"))) {
-                    return CommonUtil.successJson(roJson);
-                }
+            JSONObject roleJson = new JSONObject();
+            roleJson.put("role_name", "学生");
+            JSONObject roJson = userService.getStuRole(roleJson);
+            if ("1".equals(roJson.getString("code"))) {
+                return CommonUtil.successJson(roJson);
+            }
 
 
             jsonObject.put("role_id", roleJson.getString("id"));
@@ -156,18 +177,18 @@ public class AssociationServiceImpl implements AssociationService {
             json.put("msg", "更新社团信息成功");
             return CommonUtil.successJson(json);
         } else {
-            JSONObject assJson = new JSONObject();
-            assJson.put("role_name", "社长");
-            JSONObject adminJson = userService.getStuRole(assJson);
-            if ("1".equals(adminJson.getString("code"))) {
-                return CommonUtil.successJson(assJson);
-            }
-
-            jsonObject.put("role_id", assJson.getString("id"));
-
-
-            jsonObject.put("old_user_id", jsonObject.getString("user_id"));
-            associationDao.updateAssUser(jsonObject);
+//            JSONObject assJson = new JSONObject();
+//            assJson.put("role_name", "社长");
+//            JSONObject adminJson = userService.getStuRole(assJson);
+//            if ("1".equals(adminJson.getString("code"))) {
+//                return CommonUtil.successJson(assJson);
+//            }
+//
+//            jsonObject.put("role_id", assJson.getString("id"));
+//
+//
+//            jsonObject.put("old_user_id", jsonObject.getString("user_id"));
+//            associationDao.updateAssUser(jsonObject);
             associationDao.updateAssociation(jsonObject);
             json.put("msg", "更新社团信息成功");
             return CommonUtil.successJson(json);

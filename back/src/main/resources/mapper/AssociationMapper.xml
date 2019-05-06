@@ -2,70 +2,73 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeexy.example.dao.AssociationDao">
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from association
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <!--新增社团-->
-  <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
-    insert into association
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null and  name!=''">
-        name,
-      </if>
-      <if test="details != null and  details!=''">
-        details
-      </if>
-      <if test="simple_detail != null and  simple_detail!=''">
-        ,simple_detail
-      </if>
-      <if test="user_id != null and  user_id!=''">
-        ,user_id
-      </if>
-      <if test="user_name != null and  user_name!=''">
-        ,user_name
-      </if>
-     </trim>
+    <!--新增社团-->
+    <insert id="insert" parameterType="com.alibaba.fastjson.JSONObject">
+        insert into association
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and  name!=''">
+                name,
+            </if>
+            <if test="details != null and  details!=''">
+                details
+            </if>
+            <if test="simple_detail != null and  simple_detail!=''">
+                ,simple_detail
+            </if>
+            <if test="user_id != null and  user_id!=''">
+                ,user_id
+            </if>
+            <if test="user_name != null and  user_name!=''">
+                ,user_name
+            </if>
+        </trim>
 
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null and  name!=''">
-        #{name}
-      </if>
-      <if test="details != null and  details!=''">
-        ,#{details}
-      </if>
-      <if test="simple_detail != null and  simple_detail!=''">
-        ,#{simple_detail}
-      </if>
-      <if test="user_id != null and  user_id!=''">
-        ,#{user_id}
-      </if>
-      <if test="user_name != null and  user_name!=''">
-        ,#{user_name}
-      </if>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and  name!=''">
+                #{name}
+            </if>
+            <if test="details != null and  details!=''">
+                ,#{details}
+            </if>
+            <if test="simple_detail != null and  simple_detail!=''">
+                ,#{simple_detail}
+            </if>
+            <if test="user_id != null and  user_id!=''">
+                ,#{user_id}
+            </if>
+            <if test="user_name != null and  user_name!=''">
+                ,#{user_name}
+            </if>
 
-   </trim>
+        </trim>
 
-  </insert>
-  <!--获取社团数量-->
-  <select id="countAssociation" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
+    </insert>
+    <!--获取社团数量-->
+    <select id="countAssociation" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
     SELECT count(0)
     FROM association a
     WHERE a.delete_status = '1' AND a.is_open='1'
   </select>
-  <!--获取社团详情-->
-  <select id="getAssociation" parameterType="com.alibaba.fastjson.JSONObject"  resultType="com.alibaba.fastjson.JSONObject">
+    <!--获取社团详情-->
+    <select id="getAssociation" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
     SELECT a.*
     FROM association a
     WHERE a.delete_status=1 and a.id=#{id}
 
   </select>
-  <select id="getUserInfo" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+    <select id="getUserInfo" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
     select u.nickname,u.class from sys_user  u where u.delete_status='1' and u.id=#{user_id}
 
   </select>
-  <!--获取社团列表-->
-  <select id="listAssociation" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+    <!--获取社团列表-->
+    <select id="listAssociation" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
     SELECT
        w.id ,w.name,w.details,w.activity_id,w.user_id,w.user_name,
        date_format(w.create_time, '%Y.%m.%d %T') create_time,
@@ -77,43 +80,67 @@
     ORDER BY w.id DESC
     LIMIT #{offSet}, #{pageRow}
   </select>
-  <!--更新社团信息-->
-  <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject" >
-    UPDATE association
-    SET
-    name=#{name},
-    details=#{details},
-    simple_detail=#{simple_detail}
-    <if test="delete_status !='' and delete_status !=null">
-      ,delete_status=#{delete_status}
-    </if>
-    <if test="user_id !='' and user_id !=null">
-      ,user_id=#{user_id}
-    </if>
-    <if test="user_name !='' and user_name !=null">
-      ,user_name=#{user_name}
-    </if>
+    <!--更新社团信息-->
+    <update id="updateAssociation" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE association
+        SET
+        name=#{name},
+        details=#{details},
+        simple_detail=#{simple_detail}
+        <if test="delete_status !='' and delete_status !=null">
+            ,delete_status=#{delete_status}
+        </if>
+        <if test="user_id !='' and user_id !=null">
+            ,user_id=#{user_id}
+        </if>
+        <if test="user_name !='' and user_name !=null">
+            ,user_name=#{user_name}
+        </if>
 
-    WHERE id = #{id}
-  </update>
-  <!--<insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >-->
+        WHERE id = #{id}
+    </update>
+    <!--<insert id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject" >-->
     <!--INSERT INTO ass_users (user_id,assocation_id,is_accept,user_type)-->
     <!--VALUE (#{user_id},#{id},#{is_accept},#{user_type})-->
-  <!--</insert>-->
-  <update id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject">
-    update sys_user
-    set
-    <if test="role_id !=null and role_id!=''">
-      role_id=#{role_id},
-    </if>
-    is_choose=#{is_choose}
-    where id=#{old_user_id}
+    <!--</insert>-->
+    <update id="updateAssUser" parameterType="com.alibaba.fastjson.JSONObject">
+        update sys_user
+        set
+        <if test="role_id !=null and role_id!=''">
+            role_id=#{role_id},
+        </if>
+        <if test="is_choose!=null and is_choose!=''">
+            is_choose=#{is_choose}
+        </if>
 
-  </update>
+        where id=#{old_user_id}
 
-  <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
+    </update>
+
+    <select id="assUserCount" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
     SELECT count(0)
     FROM ass_users au
     WHERE au.delete_status = 1 AND  au.association_id=#{id}
   </select>
+
+    <!--用于获取当前社团下用户-->
+    <select id="getStuList" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
+        SELECT au.* ,su.* FROM ass_users au LEFT JOIN sys_user su ON au.user_id=su.id
+     WHERE
+                au.association_id=#{id} and au.delete_status=1
+
+
+        ORDER BY au.id DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--用于获取当前社团下用户数量-->
+    <select id="stuCount" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="Integer">
+        SELECT COUNT(0) FROM ass_users au LEFT JOIN sys_user su ON au.user_id=su.id
+
+              WHERE  au.association_id=#{id} and au.delete_status=1
+
+
+    </select>
 </mapper>

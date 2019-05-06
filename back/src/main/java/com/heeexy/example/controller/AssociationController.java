@@ -62,10 +62,22 @@ public class AssociationController {
      */
 //    @RequiresPermissions("association:list")
     @PostMapping("/getAssociation")
+
     public  JSONObject getAssociation(@RequestBody JSONObject requestJson){
 
        //        CommonUtil.hasAllRequired(requestJson,"id" );
         return associationService.getAssociation(requestJson);
     }
 
+    /**
+     * 用于选择社长
+     * @param requestJson
+     * @return
+     */
+    @PostMapping("/getStuList")
+    public  JSONObject getStuList(@RequestBody JSONObject requestJson){
+
+        //CommonUtil.hasAllRequired(requestJson,"id" );
+        return associationService.getStuList(requestJson);
+    }
 }

@@ -31,4 +31,11 @@ public interface AssociationService {
      * @return
      */
     JSONObject getAssociation(JSONObject jsonObject);
+
+    /**
+     * 用于选择社长
+     * @param jsonObject
+     * @return
+     */
+    JSONObject getStuList(JSONObject jsonObject);
 }
