@@ -46,8 +46,56 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination></el-tab-pane>
     <el-tab-pane label="社团活动" name="second"> 
-      <!-- <el-button type="primary" @click="showCreate()" >创建活动</el-button>
+       <el-button type="primary" @click="showCreate()" >参加活动</el-button> 
       <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
+              highlight-current-row>
+      <el-table-column align="center" label="序号" width="80">
+        <template slot-scope="scope">
+          <span v-text="getIndex(scope.$index)"> </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="activity_name" label="活动名称" style="width: 60px;"></el-table-column>
+      <el-table-column align="center" prop="association_name" label="所属社团" style="width: 60px;"></el-table-column>
+   
+      <el-table-column align="center"  label="活动得分" style="width: 60px;">
+           <template slot-scope="scope">
+               <el-tag  v-if="scope.row.score==null||scope.row.score==''">未打分</el-tag>
+               <el-tag  v-else type="success">{{scope.row.score}}分</el-tag>
+            </template>
+  </el-table-column>
+      <el-table-column align="center" label="活动开始时间" width="170">
+        <template slot-scope="scope">
+          <span>{{scope.row.startTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="活动结束时间" width="170">
+        <template slot-scope="scope">
+          <span>{{scope.row.endTime}}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column align="center" label="管理" width="200" >
+        <template slot-scope="scope">
+          <el-button type="primary"  icon="edit"  @click="showUpdateActivity(scope.row)">参加活动</el-button>
+      
+        </template>
+      </el-table-column> -->
+    </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="listQuery.pageNum"
+      :page-size="listQuery.pageRow"
+      :total="totalCount"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+    </el-tab-pane>
+    <el-tab-pane label="我的社团考勤" name="third">我的社团考勤待开发</el-tab-pane>
+  
+  </el-tabs>
+   
+    <el-dialog title="选择活动" :visible.sync="dialogFormVisible" :before-close="handleClose" width="80%">
+        <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
               highlight-current-row>
       <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
@@ -56,27 +104,28 @@
       </el-table-column>
       <el-table-column align="center" prop="name" label="活动名称" style="width: 60px;"></el-table-column>
       <el-table-column align="center" prop="details" label="活动简介" style="width: 60px;"></el-table-column>
+       <el-table-column align="center" prop="association_name" label="所属社团" style="width: 60px;"></el-table-column>
    
       <el-table-column align="center"  label="活动状态" style="width: 60px;">
            <template slot-scope="scope">
-               <el-tag  v-show="scope.row.is_open==1">开放中</el-tag>
-               <el-tag  v-show="scope.row.is_open==2" type="success">关闭中</el-tag>
+               <el-tag  v-if="scope.row.is_open==1">开放中</el-tag>
+               <el-tag  v-else type="success">关闭中</el-tag>
             </template>
   </el-table-column>
       <el-table-column align="center" label="活动开始时间" width="170">
         <template slot-scope="scope">
-          <span>{{scope.row.start_time}}</span>
+          <span>{{scope.row.startTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="活动结束时间" width="170">
         <template slot-scope="scope">
-          <span>{{scope.row.end_time}}</span>
+          <span>{{scope.row.endTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('assAdmin:admin')">
+      <el-table-column align="center" label="管理" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary"  icon="edit"  @click="showUpdateActivity(scope.row)">活动管理</el-button>
-       
+          <el-button type="primary"  icon="edit" v-if="scope.row.is_open==1" @click="addAct(scope.row)">参加</el-button>
+      <el-button type="primary"  icon="edit" v-else disabled @click="showUpdateActivity(scope.row)">未开放</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,66 +137,11 @@
       :total="totalCount"
       :page-sizes="[10, 20, 50, 100]"
       layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination> -->
-    社团活动待开发
-    </el-tab-pane>
-    <el-tab-pane label="我的社团考勤" name="third">我的社团考勤待开发</el-tab-pane>
-  
-  </el-tabs>
-   
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space"  :model="tempActivity" ref="tempActivity" label-position="left" label-width="100px"
-               style='width: 300px; margin-left:50px;'>
-        <el-form-item label="活动名称" prop="name" :rules="[
-      { required: true, message: '请输入活动名称', trigger: 'blur' },
-    ]">
-          <el-input type="text" v-model="tempActivity.name">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="活动介绍" prop="details" :rules="[
-      { required: true, message: '请输入活动介绍', trigger: 'blur' },
-    ]">
-          <el-input type="text" v-model="tempActivity.details">
-          </el-input>
-        </el-form-item>
-         <el-form-item label="活动时间" :rules="[
-      { required: true, message: '请选择活动时间', trigger: 'blur' },
-    ]">
-         <div class="block">
-    <span class="demonstration">选择活动开始结束时间</span>
-    <el-date-picker
-     @change="changeTime"
-      v-model="dateTime"
-      type="datetimerange"
-      range-separator="至"
-      value-format="yyyy-MM-dd HH:mm"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期">
-      
-    </el-date-picker>
-  </div>
-        </el-form-item>
-            <el-form-item label="活动状态" prop="name" :rules="[
-      { required: true, message: '请选择活动状态', trigger: 'blur' },
-    ]">
-         <el-select v-model="tempActivity.is_open" placeholder="请选择">
-        <el-option
-       v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="success" @click="createActivity">创 建</el-button>
-        <el-button type="primary" v-else @click="updateActivity">修 改</el-button>
-      </div>
+    </el-pagination>
+     
     </el-dialog>
 
-      <!-- 选择社长的弹窗 -->
+      <!-- 选择社团的弹窗 -->
 
  <el-dialog
   title="详情"
@@ -241,12 +235,28 @@
         tempActivity:{
           id:"",
           association_id:"",
-          user_Id:"",
+          user_id:"",
           name:"",
           details:"",
           start_time:"",
           end_time:"",
           is_open:""
+
+        },
+        activity:{
+          id:"",
+          association_id:"",
+          association_name:"",
+          user_Id:"",
+          user_name:"",
+          activity_id:"",
+          activity_name:"",
+          start_time:"",
+          end_time:"",
+          score:"",
+          create_time:"",
+          update_time:"",
+          delete_status:""
 
         },
         assUser: {
@@ -317,9 +327,9 @@
      if("first"==tab.name){
       this.getAssUserList();
      }
-    //  if("second"==tab.name){
-    // this.getActivityList();
-    //  }
+     if("second"==tab.name){
+     this.getActHaveList();
+      }
       },
       getAssUserList() {
         //查询列表
@@ -338,14 +348,15 @@
           this.totalCount = data.totalCount;
         })
       },
+      //获取已参加社团的活动列表
         getActivityList() {
         //查询列表
-        if (!this.hasPerm('assAdmin:list')) {
-          return
-        }
+        // if (!this.hasPerm('assAdmin:list')) {
+        //   return
+        // }
         this.listLoading = true;
         this.api({
-          url: "/assAdmin/listActivity",
+          url: "/stuAssociation/actList",
           method: "post",
           params: this.listQuery
         }).then(data => {
@@ -353,6 +364,54 @@
           this.list = data.list;
           this.totalCount = data.totalCount;
         })
+      },
+      //获取已参加社团的活动记录
+        getActHaveList() {
+        //查询列表
+        // if (!this.hasPerm('assAdmin:list')) {
+        //   return
+        // }
+        this.listQuery.user_id=this.user.userId;
+        this.listLoading = true;
+        this.api({
+          url: "/stuAssociation/actHaveList",
+          method: "post",
+          params: this.listQuery
+        }).then(data => {
+          console.log(data)
+          this.listLoading = false;
+          this.list = data.list;
+          this.totalCount = data.totalCount;
+        })
+      },
+      //参加社团活动
+      addAct(index){
+
+
+      console.log(index)
+      this.activity.user_id=this.user.userId;
+      this.activity.user_name=this.user.nickname;
+      this.activity.association_id=index.association_id;
+      this.activity.association_name=index.association_name;
+      this.activity.activity_id=index.id;
+      this.activity.activity_name=index.name;
+      this.activity.start_time=index.startTime;
+      this.activity.end_time=index.endTime;
+      console.log(this.activity)
+
+        this.api({
+          url: "/stuAssociation/addAct",
+          method: "post",
+          data: this.activity
+        }).then(data => {
+          this.$message(data.msg);
+          this.getActHaveList();
+          this.listLoading = false;
+          this.dialogFormVisible=false;
+          
+        })
+        
+
       },
       handleSizeChange(val) {
         //改变每页数量
@@ -379,11 +438,10 @@
         return (this.listQuery.pageNum - 1) * this.listQuery.pageRow + $index + 1
       },
       showCreate() {
-        //显示新增对话框
-        this.tempActivity.name = "";
-        this.tempActivity.userId = this.user;
-        this.tempActivity.details = "";
-        this.dialogStatus = "create"
+        //显示选择活动对话框
+        console.log(this.list)
+        this.getActivityList();
+
         this.dialogFormVisible = true
       },
         agreeUser(index) {

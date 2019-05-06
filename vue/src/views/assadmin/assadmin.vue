@@ -70,8 +70,8 @@
       </el-table-column>
       <el-table-column align="center" label="管理" width="200" v-if="hasPerm('assAdmin:admin')">
         <template slot-scope="scope">
-          <el-button type="primary"  icon="edit"  @click="showUpdateActivity(scope.row)">活动管理</el-button>
-       
+          <el-button type="primary"  icon="edit" size="mini" @click="showUpdateActivity(scope.row)">更新活动</el-button>
+         <el-button type="primary"  icon="edit"  size="mini" @click="showUpdateActivity(scope.row)">活动打分</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -282,6 +282,7 @@
         this.tempActivity.details = "";
         this.dialogStatus = "create"
         this.dialogFormVisible = true
+        console.log(this.tempActivity);
       },
         agreeUser(index) {
           this.assUser.user_id=index.user_id;
@@ -376,6 +377,7 @@
           params: this.tempActivity
         }).then(() => {
           this.getActivityList();
+          this.handleClose();
           this.dialogFormVisible = false
         })
       },
