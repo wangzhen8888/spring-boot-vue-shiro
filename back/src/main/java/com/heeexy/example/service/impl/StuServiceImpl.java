@@ -50,7 +50,7 @@ public class StuServiceImpl implements StuService {
     }
 
     /**
-     * 添加社团活动
+     * 参加社团活动
      * @param jsonObject
      * @return
      */
@@ -71,7 +71,7 @@ public class StuServiceImpl implements StuService {
     }
 
     /**
-     *批量新增文章
+     *批量新增测试
      *
      * @param jsonObject
      * @return
