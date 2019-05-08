@@ -47,7 +47,7 @@
     </el-pagination></el-tab-pane>
     <el-tab-pane label="社团活动" name="second"> 
        <el-button type="primary" @click="showCreate()" >参加活动</el-button> 
-      <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
+      <el-table :data="list1" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
               highlight-current-row>
       <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
@@ -65,12 +65,12 @@
   </el-table-column>
       <el-table-column align="center" label="活动开始时间" width="170">
         <template slot-scope="scope">
-          <span>{{scope.row.startTime}}</span>
+          <span>{{scope.row.start_time}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="活动结束时间" width="170">
         <template slot-scope="scope">
-          <span>{{scope.row.endTime}}</span>
+          <span>{{scope.row.end_time}}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column align="center" label="管理" width="200" >
@@ -144,7 +144,7 @@
       <!-- 选择社团的弹窗 -->
 
  <el-dialog
-  title="详情"
+  title="选择社团"
   :visible.sync="detailDialogVisible"
   width="60%"
   :before-close="handleClose">
@@ -166,14 +166,13 @@
       label="社团详情"
       prop="details">
     </el-table-column>
-    <el-table-column
-      align="right">
-      
+    
+       <el-table-column align="center" label="操作" width="200" >
       <template slot-scope="scope">
         <el-button
           size="mini"
           @click="handleEdit(scope.$index, scope.row)">申请加入</el-button>
-       
+   
       </template>
     </el-table-column>
   </el-table>
@@ -200,7 +199,8 @@
 
 
         activeName2: 'first',
-        list: [],//表格的数据,
+        list: [],//活动列表的表格的数据,
+        list1: [],//活动记录的表格的数据,
         assList:[],
         listLoadinglistLoading: false,//数据加载等待动画
         listQuery: {
@@ -380,7 +380,7 @@
         }).then(data => {
           console.log(data)
           this.listLoading = false;
-          this.list = data.list;
+          this.list1 = data.list;
           this.totalCount = data.totalCount;
         })
       },
@@ -398,7 +398,7 @@
       this.activity.start_time=index.startTime;
       this.activity.end_time=index.endTime;
       console.log(this.activity)
-
+// debugger
         this.api({
           url: "/stuAssociation/addAct",
           method: "post",
