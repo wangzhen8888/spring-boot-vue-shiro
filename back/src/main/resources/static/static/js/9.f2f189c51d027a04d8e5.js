@@ -1,0 +1,1 @@
+webpackJsonp([9],{A8wO:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var s={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{staticClass:"shetuan2"},[this._v("\n    测试2\n")])},staticRenderFns:[]},l=n("/Xao")(null,s,!1,null,null,null);t.default=l.exports}});

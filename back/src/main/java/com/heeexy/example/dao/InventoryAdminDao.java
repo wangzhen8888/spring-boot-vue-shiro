@@ -37,6 +37,20 @@ public interface InventoryAdminDao {
     List<JSONObject> listInventoryAdmin(JSONObject jsonObject);
 
     /**
+     * 最近一个月资金支出记录
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> selectDelOrderList(JSONObject jsonObject);
+    /**
+     * 最近一个月资金收入记录
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> selectAddOrderList(JSONObject jsonObject);
+
+
+    /**
      * 更新货物
      *
      * @param jsonObject

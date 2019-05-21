@@ -34,6 +34,17 @@ public class InventoryAdminController {
     public JSONObject listInventoryAdmin(HttpServletRequest request) {
         return inventoryAdminService.listInventoryAdmin(CommonUtil.request2Json(request));
     }
+    /**
+     * 最近一个月出入库记录
+     *
+     * @param request
+     * @return
+     */
+//    @RequiresPermissions("inventoryAdmin:list")
+    @GetMapping("/selectOrderList")
+    public JSONObject selectOrderList(HttpServletRequest request) {
+        return inventoryAdminService.selectOrderList(CommonUtil.request2Json(request));
+    }
 
     /**
      * 新增货物

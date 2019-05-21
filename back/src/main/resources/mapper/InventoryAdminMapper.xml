@@ -71,6 +71,14 @@
         ORDER BY w.id DESC
         LIMIT #{offSet}, #{pageRow}
     </select>
+    <!--一个月的支出记录-->
+    <select id="selectDelOrderList" resultType="com.alibaba.fastjson.JSONObject">
+       SELECT DATE_FORMAT(create_time,'%Y-%m-%d') as time,sum(goods_price*goods_num) money FROM orders WHERE delete_status=1  AND order_type=0 OR order_type=2 GROUP BY  time DESC
+    </select>
+    <!--一个月的收出记录-->
+    <select id="selectAddOrderList" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT DATE_FORMAT(create_time,'%Y-%m-%d') as time,sum(goods_price*goods_num) money FROM orders WHERE delete_status=1  AND order_type=1 GROUP BY  time DESC
+    </select>
     <!--动态更新货物订单信息-->
     <update id="updateInventoryAdmin" parameterType="com.alibaba.fastjson.JSONObject">
         UPDATE orders

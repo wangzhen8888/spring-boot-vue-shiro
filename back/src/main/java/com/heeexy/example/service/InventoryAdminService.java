@@ -22,6 +22,13 @@ public interface InventoryAdminService {
      * @return
      */
     JSONObject listInventoryAdmin(JSONObject jsonObject);
+    /**
+     * 最近一个月资金出入记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    JSONObject selectOrderList(JSONObject jsonObject);
 
     /**
      * 更新货物盘点记录
