@@ -67,6 +67,16 @@ export const asyncRouterMap = [{
         menu: 'order'
       },
       {
+        path: 'echar',
+        name: '资金汇总记录',
+        component: _import('echar/echar'),
+        meta: {
+          title: '资金汇总记录',
+          icon: 'example'
+        },
+        menu: 'echar'
+      },
+      {
         path: 'inventory',
         name: '盘点管理',
         component: _import('inventory/inventory'),
