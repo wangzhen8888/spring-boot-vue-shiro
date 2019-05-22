@@ -73,7 +73,7 @@
         <template slot-scope="scope">
           <el-button type="primary"  icon="edit" size="mini" @click="showUpdateActivity(scope.row)">更新</el-button>
          <el-button type="primary"  icon="edit"  size="mini" @click="showActlist(scope.row)">打分</el-button>
-          <el-button type="primary"  icon="edit"  size="mini" @click="showActlist(scope.row)">删除</el-button>
+   
         </template>
       </el-table-column>
     </el-table>
@@ -99,9 +99,14 @@
       <el-table-column align="center" prop="user_name" label="学生姓名" style="width: 60px;">
         
       </el-table-column>
-      <el-table-column align="center" prop="content" label="考勤状态" style="width: 60px;">
+      <el-table-column align="center" prop="user_id" label="学号" style="width: 60px;">
+        
+      </el-table-column>
+      <el-table-column align="center" prop="kaoqinType" label="考勤状态" style="width: 60px;">
         <template slot-scope="scope">
-          <span>{{scope.row.createTime}}</span>
+        <el-tag  v-show="scope.row.kaoqintype==1">正常</el-tag>
+        <el-tag  v-show="scope.row.kaoqintype==2" type="success">迟到</el-tag>
+        <el-tag  v-show="scope.row.kaoqintype==3" type="success">未到</el-tag>
         </template>
       </el-table-column>
 
@@ -110,10 +115,13 @@
           <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
+       <el-table-column align="center" prop="remark" label="考勤备注" style="width: 60px;">
+        
+      </el-table-column>
       <el-table-column align="center" label="管理" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.$index)">修改</el-button>
-           <el-button type="primary" icon="edit" size="mini" @click="showUpdate(scope.$index)">删除</el-button>
+          <el-button type="primary" icon="edit" size="mini" @click="showUpdateKaoqin(scope.row)">修改</el-button>
+           <el-button type="primary" icon="edit" size="mini" @click="deleteKaoqin(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -131,7 +139,7 @@
   
   </el-tabs>
 
-  <!-- 当前社团社员列表 -->
+  <!-- 当前社团社员列表弹窗-->
   <el-dialog title="社员列表" :visible.sync="dialogKaoQin" style="width:1800px">
       <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
               highlight-current-row>
@@ -205,6 +213,38 @@
 
 
    </el-dialog>
+   <!-- 更新考勤记录弹窗 -->
+   <el-dialog  title="更新记录" :visible.sync="updateKaoqinVisible" >
+ <el-form class="small-space"  :model="kaoqin" ref="kaoqin" label-position="left" label-width="100px"
+               style='width: 500px; margin-left:50px;'>
+          <el-form-item label="社员姓名">
+          <el-input type="text" disabled v-model="kaoqin.user_name">
+          </el-input>
+        </el-form-item>
+           </el-form-item>
+            <el-form-item label="考勤类型" prop="kaoqintype"  :rules="[
+      { required: true, message: '请选择考勤类型', trigger: 'blur' },
+    ]">
+         <el-select v-model="kaoqin.kaoqintype" placeholder="请选择">
+        <el-option
+       v-for="item in options1"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+        </el-form-item>
+        <el-form-item label="考勤备注">
+          <el-input type="text"  v-model="kaoqin.remark">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleClose3">取 消</el-button>
+        <el-button  type="success" @click="updateKaoQin">确认</el-button>
+       
+      </div>
+   </el-dialog>
    <!-- 活动更新弹窗 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form class="small-space"  :model="tempActivity" ref="tempActivity" label-position="left" label-width="100px"
@@ -270,6 +310,7 @@
       <el-table-column align="center" prop="activity_name" label="活动名称" style="width: 60px;"></el-table-column>
       <el-table-column align="center" prop="association_name" label="所属社团" style="width: 60px;"></el-table-column>
      <el-table-column align="center" prop="user_name" label="参加人姓名" style="width: 60px;"></el-table-column>
+     <el-table-column align="center" prop="user_id" label="学号" style="width: 60px;"></el-table-column>
       <el-table-column align="center"  label="活动得分" style="width: 60px;">
            <template slot-scope="scope">
                <el-tag  v-if="scope.row.score==null||scope.row.score==''">未打分</el-tag>
@@ -340,6 +381,7 @@
         listLoading: false,//数据加载等待动画
         dialogKaoQin:false,
         kaoqinVisible:false,
+        updateKaoqinVisible:false,
         listQuery: {
           pageNum: 1,//页码
           pageRow: 10,//每页条数
@@ -456,6 +498,7 @@
         this.kaoqin.user_id=index.user_id;
         this.kaoqin.association_id=index.association_id;
         this.kaoqin.kaoqintype="";
+        this.kaoqin.remark="";
         this.kaoqinVisible=true
 console.log(index)
       },
@@ -493,6 +536,18 @@ console.log(index)
           this.listQuery.is_accept=""
          
         })
+      },
+      // 显示更新考勤记录
+      showUpdateKaoqin(index){
+        console.log(index);
+        this.kaoqin.id=index.id;
+        this.kaoqin.user_name=index.user_name;
+        this.kaoqin.user_id=index.user_id;
+        this.kaoqin.association_id=index.association_id;
+        this.kaoqin.kaoqintype=index.kaoqintype;
+        this.kaoqin.remark=index.remark;
+        this.updateKaoqinVisible=true;
+
       },
       //获取所管理的社团下所有参加的活动记录
       actAssoList() {
@@ -553,10 +608,18 @@ console.log(index)
         this.kaoqin.user_name="";
         this.kaoqin.user_id="";
         this.kaoqin.association_id="";
-        this.kaoqintype="";
+        this.kaoqin.kaoqintype="";
        this. kaoqinVisible= false;
        
         
+      },
+      handleClose3(){
+         this.kaoqin.user_name="";
+        this.kaoqin.user_id="";
+        this.kaoqin.association_id="";
+        this.kaoqin.kaoqintype="";
+        this.kaoqin.remark="";
+       this. updateKaoqinVisible= false;
       },
       getIndex($index) {
         //表格序号
@@ -698,12 +761,43 @@ console.log(index)
         this.kaoqin.association_id="";
         this.kaoqin.kaoqintype="";
         this.kaoqinVisible=false;
+         this.getKaoqinList();
+         
+        })
+
+      },
+      //删除考勤记录
+      deleteKaoqin(index){
+        console.log(index)
+        this.kaoqin.id=index.id;
+        this.kaoqin.delete_status=2
+        this.updateKaoQin();
+
+      },
+      updateKaoQin(){
+        //更新考勤记录
+       console.log(this.kaoqin)
+        this.api({
+          url: "/stuAssociation/updateKaoqinInfo",
+          method: "post",
+          params: this.kaoqin
+        }).then(() => {
+        
+        console.log("执行了更新考勤记录");
+        this.kaoqin.id="";
+        this.kaoqin.user_name="";
+        this.kaoqin.user_id="";
+        this.kaoqin.association_id="";
+        this.kaoqin.kaoqintype="";
+        this.kaoqin.delete_status="";
+        this.updateKaoqinVisible=false;
+        this.getKaoqinList();
          
         })
 
       },
       showUpdateStuActivity(index){
-     
+     console.log(index)
           //显示更新对话框
           this.assUserAct.id=index.id;
           this.assUserAct.score=index.score;

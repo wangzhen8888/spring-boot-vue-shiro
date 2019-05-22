@@ -1,72 +1,52 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-form>
-        <el-form-item>
-          <el-button type="primary" icon="plus" @click="showCreate" v-if="hasPerm('article:add')">添加
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
-              highlight-current-row>
-      <el-table-column align="center" label="序号" width="80">
-        <template slot-scope="scope">
-          <span v-text="getIndex(scope.$index)"> </span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
-
-      <el-table-column align="center" label="创建时间" width="170">
-        <template slot-scope="scope">
-          <span>{{scope.row.createTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
-        <template slot-scope="scope">
-          <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="listQuery.pageNum"
-      :page-size="listQuery.pageRow"
-      :total="totalCount"
-      :page-sizes="[10, 20, 50, 100]"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form class="small-space" :model="tempArticle" label-position="left" label-width="60px"
-               style='width: 300px; margin-left:50px;'>
-        <el-form-item label="文章">
-          <el-input type="text" v-model="tempArticle.content">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="success" @click="createArticle">创 建</el-button>
-        <el-button type="primary" v-else @click="updateArticle">修 改</el-button>
-      </div>
-    </el-dialog>
+    <div class="filter-container" style="width:600px">
+      <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+  <el-form-item label="学号">
+    <el-input disabled v-model="formLabelAlign.id"></el-input>
+  </el-form-item>
+  <el-form-item label="姓名">
+    <el-input  disabled v-model="formLabelAlign.user_name"></el-input>
+  </el-form-item>
+  <el-form-item label="班级">
+    <el-input disabled v-model="formLabelAlign.class"></el-input>
+  </el-form-item>
+   <el-form-item label="手机号">
+    <el-input v-model="formLabelAlign.phone"></el-input>
+  </el-form-item>
+  <el-form-item label="密码">
+    <el-input v-model="formLabelAlign.password"></el-input>
+  </el-form-item>
+   <el-form-item>
+    <el-button type="primary" @click="updateUserInfo" :disabled="!hasPerm('userInfo:update')">修改</el-button>
+  </el-form-item>
+</el-form>
   </div>
+</div>
 </template>
 <script>
   export default {
     data() {
       return {
+
+        labelPosition: 'left',
+        formLabelAlign: {
+          id:"",
+          user_name: '',
+          class: '',
+          phone: '',
+          password:""
+        },
         totalCount: 0, //分页组件--数据总条数
 
 
         
         list: [],//表格的数据
-        listLoadinglistLoading: false,//数据加载等待动画
+        listLoading: false,//数据加载等待动画
         listQuery: {
           pageNum: 1,//页码
           pageRow: 10,//每页条数
-          name: ''
+          user_id: ''
         },
         dialogStatus: 'create',
         dialogFormVisible: false,
@@ -83,25 +63,61 @@
       }
     },
     created() {
-      this.getList();
+      this.listQuery.user_id=this.user.userId
+     console.log(this.listQuery);
+     this.getUserInfo()
+    },
+    computed:{
+      user(){
+        return this.$store.state.user
+      }
+
     },
     methods: {
-      getList() {
-        //查询列表
-        if (!this.hasPerm('article:list')) {
-          return
-        }
-        this.listLoading = true;
+      getUserInfo(){
+        
+        //获取角色基本信息
         this.api({
-          url: "/article/listArticle",
-          method: "get",
+          url: "/user/getNewUserInfo",
+          method: "post",
           params: this.listQuery
-        }).then(data => {
-          this.listLoading = false;
-          this.list = data.list;
-          this.totalCount = data.totalCount;
+        }).then((res) => {
+          this.formLabelAlign.id=res.id;
+         this.formLabelAlign.user_name=res.nickname;
+         this.formLabelAlign.phone=res.phone;
+           this.formLabelAlign.class=res.class;
+           this.formLabelAlign.password=res.password;
+
+          console.log(this.formLabelAlign)
+          
         })
       },
+      updateUserInfo(){
+        if(this.formLabelAlign.password==""||null==this.formLabelAlign.password){
+          this.$message({
+          message: '密码不能为空',
+          type: 'warning'
+        });
+    
+        return
+        }
+      //更新个人基本信息
+        this.api({
+          url: "/user/updateNewUser",
+          method: "post",
+          params: this.formLabelAlign
+        }).then((res) => {
+         this.getUserInfo();
+          console.log(this.formLabelAlign)
+           this.$message({
+          message: '修改成功',
+          type: 'warning'
+        });
+        })
+
+
+      },
+     
       handleSizeChange(val) {
         //改变每页数量
         this.listQuery.pageRow = val
