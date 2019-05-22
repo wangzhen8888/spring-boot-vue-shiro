@@ -2,6 +2,7 @@ package com.heeexy.example.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.heeexy.example.dao.ArticleDao;
+import com.heeexy.example.dao.AssAdminDao;
 import com.heeexy.example.dao.StuDao;
 import com.heeexy.example.service.ArticleService;
 import com.heeexy.example.service.StuService;
@@ -20,6 +21,8 @@ public class StuServiceImpl implements StuService {
 
     @Resource
     private StuDao stuDao;
+    @Resource
+    private AssAdminDao assAdminDao;
 
     /**
      * 加入社团
@@ -138,6 +141,23 @@ public class StuServiceImpl implements StuService {
         List<JSONObject> list = stuDao.actHaveList(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);
     }
+    /**
+     * 获取当前社团下所有的活动记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject actAssoList(JSONObject jsonObject) {
+
+        CommonUtil.fillPageParam(jsonObject);
+
+        JSONObject json = assAdminDao.getAdminId(jsonObject);
+        jsonObject.put("association_id",json.getString("id"));
+        int count = stuDao.countActAssoList(jsonObject);
+        List<JSONObject> list = stuDao.actAssoList(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
+    }
 
     /**
      * 更新文章
@@ -150,5 +170,45 @@ public class StuServiceImpl implements StuService {
     public JSONObject updateArticle(JSONObject jsonObject) {
         stuDao.updateArticle(jsonObject);
         return CommonUtil.successJson();
+    }
+
+    /**
+     * 更新活动得分
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject updateActInfo(JSONObject jsonObject) {
+        stuDao.updateActInfo(jsonObject);
+        return CommonUtil.successJson();
+    }
+    /**
+     * 添加考勤记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject createKaoQin(JSONObject jsonObject) {
+       stuDao.createKaoQin(jsonObject);
+        return CommonUtil.successJson();
+    }
+    /**
+     * 获取当前社团下所有的考勤记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject selectKaoqinList(JSONObject jsonObject) {
+
+        CommonUtil.fillPageParam(jsonObject);
+        JSONObject json = assAdminDao.getAdminId(jsonObject);
+        jsonObject.put("association_id",json.getString("id"));
+        int count = stuDao.countKaoqinList(jsonObject);
+        List<JSONObject> list = stuDao.selectKaoqinList(jsonObject);
+        return CommonUtil.successPage(jsonObject, list, count);
     }
 }

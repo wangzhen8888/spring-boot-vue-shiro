@@ -34,7 +34,7 @@
         FROM ass_users w
         WHERE w.delete_status = 1 AND w.user_id=#{user_id} AND association_id=#{association_id}
     </select>
-    <!--查询是否已经加入过该社团-->
+    <!--判断是否是该社团的社长-->
     <select id="countIsAdminAssociation" resultType="Integer">
         SELECT count(0)
         FROM association w
@@ -78,6 +78,48 @@
     ORDER BY ac.id DESC
       LIMIT #{offSet}, #{pageRow}
     </select>
+    <!--查询当前社团下所有所有的活动记录数量-->
+    <select id="countActAssoList" resultType="Integer">
+        SELECT
+        count(0)
+        FROM
+        act_ass_user ac
+
+        WHERE ac.association_id=#{association_id} AND ac.delete_status=1 AND ac.activity_id=#{activity_id}
+
+    </select>
+    <!--查询当前社团下所有所有的活动记录-->
+    <select id="actAssoList" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+	ac.id,
+	ac.user_name,
+	ac.user_id,
+	ac.association_id,
+	ac.association_name,
+	ac.activity_name,
+	ac.activity_id,
+	ac.score,
+	date_format(
+		ac.create_time,
+		'%Y.%m.%d %T'
+	) createTime,
+	date_format(
+		ac.update_time,
+		'%Y.%m.%d %T'
+	) updateTime,
+	date_format(
+		ac.start_time,
+		'%Y.%m.%d %T'
+	) startTime,
+	date_format(ac.end_time, '%Y.%m.%d %T') endTime,
+ac.delete_status
+FROM
+	act_ass_user ac
+
+WHERE ac.association_id=#{association_id} AND ac.delete_status=1 AND ac.activity_id=#{activity_id}
+ORDER BY ac.id DESC
+      LIMIT #{offSet}, #{pageRow}
+    </select>
     <!--查询所加入的社团活动数量-->
     <select id="countActList" resultType="Integer">
         SELECT
@@ -105,17 +147,14 @@
         date_format(au.start_time, '%Y.%m.%d %T') start_time,
         date_format(au.end_time, '%Y.%m.%d %T') end_time
         from act_ass_user au
-      WHERE
+        WHERE
         delete_status=1
-            <if test="user_id !=null and user_id !=''">
-                and user_id=#{user_id}
-            </if>
-            <if test="association_id !=null and association_id !=''">
-                and association_id=#{association_id}
-            </if>
-
-
-
+        <if test="user_id !=null and user_id !=''">
+            and user_id=#{user_id}
+        </if>
+        <if test="association_id !=null and association_id !=''">
+            and association_id=#{association_id}
+        </if>
 
 
         ORDER BY id DESC
@@ -146,5 +185,60 @@
             content = #{content}
         WHERE id = #{id}
     </update>
+    <!--更新分数-->
+    <update id="updateActInfo" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE act_ass_user
+        SET
+        score = #{score}
+        WHERE id = #{id}
+    </update>
+    <!--生成考勤记录-->
+    <insert id="createKaoQin" parameterType="com.alibaba.fastjson.JSONObject">
 
+        insert into kaoqin (user_name,user_id,association_id,kaoqintype)
+        values ( #{user_name}, #{user_id},#{association_id},#{kaoqintype})
+    </insert>
+    <!--获取当前社团下所有成员的考勤记录-->
+    <select id="selectKaoqinList" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+        k.id,
+        k.user_name,
+        k.user_id,
+        k.association_id,
+        k.kaoqintype,
+        k.delete_status,
+        k.remark,
+        date_format(k.create_time, '%Y.%m.%d %T') createTime,
+        date_format(k.update_time, '%Y.%m.%d %T') updateTime
+        FROM kaoqin k WHERE k.delete_status=1 AND k.association_id=#{association_id}
+        <if test="kaoqintype!=null and kaoqintype!=''">
+            AND k.kaoqintype=#{kaoqintype}
+        </if>
+        <if test="user_id!=null and user_id!=''">
+            AND k.user_id=#{user_id}
+        </if>
+        <if test="user_name !=null  and user_name!=''">
+
+            AND k.user_name LIKE CONCAT ('%',#{user_name},'%')
+        </if>
+        ORDER BY k.id DESC
+        LIMIT #{offSet}, #{pageRow}
+    </select>
+    <!--获取当前社团下所有成员的考勤记录的数量-->
+    <select id="countKaoqinList" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
+        SELECT
+        count(0)
+        FROM kaoqin k WHERE k.delete_status=1 AND k.association_id=#{association_id}
+        <if test="kaoqintype!=null and kaoqintype!=''">
+            AND k.kaoqintype=#{kaoqintype}
+        </if>
+        <if test="user_id!=null and user_id!=''">
+            AND k.user_id=#{user_id}
+        </if>
+        <if test="user_name !=null  and user_name!=''">
+
+            AND k.user_name LIKE CONCAT ('%',#{user_name},'%')
+        </if>
+
+    </select>
 </mapper>

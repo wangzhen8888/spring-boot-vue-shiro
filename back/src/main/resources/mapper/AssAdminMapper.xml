@@ -13,6 +13,7 @@
         SELECT COUNT(0) from activity ac LEFT JOIN association s on ac.association_id =s.id WHERE s.user_id=#{userId}
         AND
         s.delete_status=1 and ac.delete_status=1
+
     </select>
     <!--获取活动列表-->
     <select id="listActivity" parameterType="com.alibaba.fastjson.JSONObject"
@@ -26,6 +27,9 @@
         SELECT a.user_id,a.association_id,a.is_accept,date_format(a.create_time, '%Y.%m.%d %T')
         create_time,s.nickname,s.class FROM ass_users a LEFT JOIN sys_user s on a.user_id=s.id WHERE
         a.association_id=#{id}
+        <if test="is_accept!=null and is_accept!=''">
+            AND a.is_accept=1
+        </if>
         AND a.delete_status=1 and s.delete_status=1 LIMIT #{offSet}, #{pageRow}
     </select>
     <!--根据社长id获取社团id-->
@@ -48,6 +52,7 @@
         values ( #{name}, #{details},#{association_id},#{association_name},#{start_time},#{end_time},#{is_open}
         )
     </insert>
+
     <!--更新活动信息-->
     <update id="updateActivity" parameterType="com.alibaba.fastjson.JSONObject">
         UPDATE activity

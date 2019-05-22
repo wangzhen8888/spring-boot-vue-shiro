@@ -1,5 +1,6 @@
 package com.heeexy.example.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public interface StuDao {
      * @return
      */
     int countStuAssociation(JSONObject jsonObject);
+
     /**
      * 统计所加入社团的活动总数
      *
@@ -47,6 +49,7 @@ public interface StuDao {
      * @return
      */
     int countActList(JSONObject jsonObject);
+
     /**
      * 判断是否参加过该活动
      *
@@ -63,6 +66,7 @@ public interface StuDao {
      * @return
      */
     int countIsStuAssociation(JSONObject jsonObject);
+
     /**
      * 判断是否是该社团的社长
      *
@@ -78,6 +82,7 @@ public interface StuDao {
      * @return
      */
     List<JSONObject> listStuAssociation(JSONObject jsonObject);
+
     /**
      * 所加入的社团的活动记录
      *
@@ -85,6 +90,7 @@ public interface StuDao {
      * @return
      */
     List<JSONObject> actHaveList(JSONObject jsonObject);
+
     /**
      * 统计所加入社团的活动总数
      *
@@ -100,6 +106,7 @@ public interface StuDao {
      * @return
      */
     int updateArticle(JSONObject jsonObject);
+
     /**
      * 更新加入社团的信息
      *
@@ -107,4 +114,45 @@ public interface StuDao {
      * @return
      */
     List<JSONObject> actList(JSONObject jsonObject);
+
+    /**
+     * 获取当前社团下所有的活动记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> actAssoList(JSONObject jsonObject);
+
+    /**
+     * 获取当前社团下所有的活动记录数量
+     *
+     * @param jsonObject
+     * @return
+     */
+    int countActAssoList(JSONObject jsonObject);
+
+    /**
+     * 更新得分情况
+     *
+     * @param jsonObject
+     * @return
+     */
+    int updateActInfo(JSONObject jsonObject);
+
+    /**
+     * 添加考勤记录
+     *
+     * @param jsonObject
+     * @return
+     */
+    int createKaoQin(JSONObject jsonObject);
+
+    /**
+     * 获取当前社团下所有成员的考勤记录
+     * @param jsonObject
+     * @return
+     */
+    List<JSONObject> selectKaoqinList(JSONObject jsonObject);
+
+    int countKaoqinList(JSONObject jsonObject);
 }

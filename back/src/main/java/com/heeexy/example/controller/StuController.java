@@ -59,6 +59,17 @@ public class StuController {
     }
 
     /**
+     * 更新活动得分
+     * @param requestJson
+     * @return
+     */
+    @PostMapping("/updateActInfo")
+    public JSONObject updateActInfo(HttpServletRequest request ) {
+//        CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
+        return stuService.updateActInfo(CommonUtil.request2Json(request));
+    }
+
+    /**
      * 修改文章
      *
      * @param requestJson
@@ -94,6 +105,38 @@ public class StuController {
 
         return stuService.actHaveList(CommonUtil.request2Json(request));
     }
+    /**
+     * 查询当前社团下所有的活动记录
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:update")
+    @PostMapping("/actAssoList")
+    public JSONObject actAssoList(HttpServletRequest request) {
+        return stuService.actAssoList(CommonUtil.request2Json(request));
+    }
+    /**
+     * 添加考勤记录
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:add")
+    @PostMapping("/createKaoQin")
+    public JSONObject createKaoQin(@RequestBody JSONObject requestJson) {
+//        CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
+        return stuService.createKaoQin(requestJson);
+    }
 
+    /**
+     * 获取当前社团下所有的考勤记录
+     * @param request
+     * @return
+     */
+    @PostMapping("/selectKaoqinList")
+    public JSONObject selectKaoqinList(HttpServletRequest request) {
+        return stuService.selectKaoqinList(CommonUtil.request2Json(request));
+    }
 
 }
