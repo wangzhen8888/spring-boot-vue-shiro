@@ -90,9 +90,60 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     </el-tab-pane>
-    <el-tab-pane label="我的社团考勤" name="third">我的社团考勤待开发</el-tab-pane>
-  
-  </el-tabs>
+    <el-tab-pane label="我的社团考勤" name="third">
+
+ <el-table :data="list2" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
+              highlight-current-row>
+      <el-table-column align="center" label="序号" width="80">
+        <template slot-scope="scope">
+          <span v-text="getIndex(scope.$index)"> </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="user_name" label="学生姓名" style="width: 60px;">
+        
+      </el-table-column>
+      <el-table-column align="center" prop="user_id" label="学号" style="width: 60px;">
+        
+      </el-table-column>
+      <el-table-column align="center" prop="kaoqinType" label="考勤状态" style="width: 60px;">
+        <template slot-scope="scope">
+        <el-tag  v-show="scope.row.kaoqintype==1">正常</el-tag>
+        <el-tag  v-show="scope.row.kaoqintype==2" type="success">迟到</el-tag>
+        <el-tag  v-show="scope.row.kaoqintype==3" type="success">未到</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="考勤时间" width="170">
+        <template slot-scope="scope">
+          <span>{{scope.row.createTime}}</span>
+        </template>
+      </el-table-column>
+       <el-table-column align="center" prop="remark" label="考勤备注" style="width: 60px;">
+        
+      </el-table-column>
+      <!-- <el-table-column align="center" label="管理" width="200" >
+        <template slot-scope="scope">
+          <el-button type="primary" icon="edit" size="mini" @click="showUpdateKaoqin(scope.row)">修改</el-button>
+           <el-button type="primary" icon="edit" size="mini" @click="deleteKaoqin(scope.row)">删除</el-button>
+        </template>
+      </el-table-column> -->
+    </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="listQuery.pageNum"
+      :page-size="listQuery.pageRow"
+      :total="totalCount"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+    
+
+
+
+    </el-tab-pane>
+   </el-tabs>
+
    
     <el-dialog title="选择活动" :visible.sync="dialogFormVisible" :before-close="handleClose" width="80%">
         <el-table :data="list" v-loading.body="listLoading" element-loading-text="拼命加载中" border fit
@@ -199,14 +250,16 @@
 
 
         activeName2: 'first',
-        list: [],//活动列表的表格的数据,
+        list: [],//社员列表的表格的数据,
         list1: [],//活动记录的表格的数据,
+        list2:[],//考勤记录表格数据
         assList:[],
         listLoadinglistLoading: false,//数据加载等待动画
         listQuery: {
           pageNum: 1,//页码
           pageRow: 10,//每页条数
-          user_id: ''
+          user_id: '',
+           flag:"1" //考勤记录是否需要查社团id
         },
         options:[
           {
@@ -276,6 +329,7 @@
 
     },
     created() {
+      console.log(this.user)
       this.listQuery.user_id=this.user.userId;
       console.log(this.user)
       console.log(this.listQuery)
@@ -330,6 +384,9 @@
      if("second"==tab.name){
      this.getActHaveList();
       }
+      if("third"==tab.name){
+      this.getKaoqinList();
+      }
       },
       getAssUserList() {
         //查询列表
@@ -347,6 +404,19 @@
           this.list = data.list;
           this.totalCount = data.totalCount;
         })
+      },
+       getKaoqinList(){
+        console.log(this.listQuery)
+         //获取当前社团下考勤记录
+        this.api({
+          url: "/stuAssociation/selectKaoqinList",
+          method: "post",
+          params: this.listQuery
+        }).then((res) => {
+          console.log(res);
+          this.list2=res.list;
+        })
+
       },
       //获取已参加社团的活动列表
         getActivityList() {

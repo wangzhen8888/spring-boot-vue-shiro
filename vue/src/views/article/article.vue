@@ -15,13 +15,15 @@
           <span v-text="getIndex(scope.$index)"> </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="content" label="文章" style="width: 60px;"></el-table-column>
-
-      <el-table-column align="center" label="创建时间" width="170">
+      <el-table-column align="center" prop="content" label="文章" style="width: 60px;">
+ <el-table-column align="center" label="创建时间" width="170">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
+      </el-table-column>
+
+     
       <el-table-column align="center" label="管理" width="200" v-if="hasPerm('article:update')">
         <template slot-scope="scope">
           <el-button type="primary" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
