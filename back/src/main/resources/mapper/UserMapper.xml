@@ -20,6 +20,8 @@
         <result column="username" property="username"/>
         <result column="nickname" property="nickname"/>
         <result column="roleId" property="roleId"/>
+        <result column="class" property="class"/>
+        <result column="phone" property="phone"/>
         <result column="roleName" property="roleName"/>
         <result column="createTime" property="createTime"/>
         <result column="updateTime" property="updateTime"/>
@@ -43,6 +45,7 @@
         role_id roleId,
         stu_num stuNum,
         class class,
+        phone phone,
         delete_status deleteStatus,
         DATE_FORMAT(create_time, '%Y.%m.%d %T') createTime,
         DATE_FORMAT(update_time, '%Y.%m.%d %T') updateTime
@@ -126,6 +129,8 @@
         <collection property="users" ofType="com.alibaba.fastjson.JSONObject">
             <id column="userId" property="userId"/>
             <result column="nickname" property="nickname"/>
+            <result column="class" property="class"/>
+            <result column="phone" property="phone"/>
         </collection>
         <collection property="menus" ofType="com.heeexy.example.util.model.One2Many">
             <id column="menuCode" property="menuCode"/>
@@ -142,6 +147,8 @@
             r.role_name       roleName,
             u.id              userId,
             u.nickname        nickname,
+            u.class              class,
+            u.phone             phone,
             p.id              permissionId,
             p.menu_code       menuCode,
             p.menu_name       menuName,
@@ -263,9 +270,20 @@
         stu_num=VALUES (stu_num),
         class=VALUES (class)
     </insert>
-    <select id="getStuRole" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+    <select id="getStuRole" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
         SELECT  s.id FROM sys_role s WHERE delete_status='1'AND role_name=#{role_name}
     </select>
-
-
+    <select id="getNewUserInfo" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
+    SELECT    su.id,su.nickname,su.class,su.phone ,su.password  FROM sys_user su  WHERE  delete_status='1'AND  id=#{user_id}
+</select>
+    <!--更新个人基本信息-->
+    <update id="updateNewUser">
+        UPDATE sys_user
+        SET
+        password = #{password}
+        ,phone=#{phone}
+        WHERE id = #{id}
+    </update>
 </mapper>

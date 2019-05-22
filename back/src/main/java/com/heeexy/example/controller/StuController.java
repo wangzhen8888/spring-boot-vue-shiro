@@ -68,6 +68,16 @@ public class StuController {
 //        CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
         return stuService.updateActInfo(CommonUtil.request2Json(request));
     }
+    /**
+     * 更新考勤记录
+     * @param requestJson
+     * @return
+     */
+    @PostMapping("/updateKaoqinInfo")
+    public JSONObject updateKaoqinInfo(HttpServletRequest request ) {
+//        CommonUtil.hasAllRequired(requestJson, "user_id,association_name,association_id");
+        return stuService.updateKaoqinInfo(CommonUtil.request2Json(request));
+    }
 
     /**
      * 修改文章

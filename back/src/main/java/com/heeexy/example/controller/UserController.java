@@ -133,4 +133,27 @@ public class UserController {
         CommonUtil.hasAllRequired(requestJson, "roleId");
         return userService.deleteRole(requestJson);
     }
+    /**
+     * 获取个人基本信息
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:update")
+    @PostMapping("/getNewUserInfo")
+    public JSONObject getNewUserInfo(HttpServletRequest request) {
+        return userService.getNewUserInfo(CommonUtil.request2Json(request));
+    }
+    /**
+     * 获取个人基本信息
+     *
+     * @param requestJson
+     * @return
+     */
+//    @RequiresPermissions("stuAssociation:update")
+    @PostMapping("/updateNewUser")
+    public JSONObject updateNewUser(HttpServletRequest request) {
+        return userService.updateNewUser(CommonUtil.request2Json(request));
+    }
+
 }

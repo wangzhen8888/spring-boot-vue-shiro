@@ -93,4 +93,17 @@ public interface UserService {
 
     JSONObject getStuRole(JSONObject jsonObject);
 
+    /**
+     * 查询角色基本信息
+     * @param jsonObject
+     * @return
+     */
+    JSONObject getNewUserInfo(JSONObject jsonObject);
+
+    /**
+     * 更新个人基本信息
+     * @param jsonObject
+     * @return
+     */
+      JSONObject updateNewUser(JSONObject jsonObject);
 }

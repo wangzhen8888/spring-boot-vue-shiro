@@ -184,6 +184,17 @@ public class StuServiceImpl implements StuService {
         return CommonUtil.successJson();
     }
     /**
+     * 更新考勤记录
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject updateKaoqinInfo(JSONObject jsonObject) {
+        stuDao.updateKaoqinInfo(jsonObject);
+        return CommonUtil.successJson();
+    }
+    /**
      * 添加考勤记录
      *
      * @param jsonObject
@@ -205,8 +216,11 @@ public class StuServiceImpl implements StuService {
     public JSONObject selectKaoqinList(JSONObject jsonObject) {
 
         CommonUtil.fillPageParam(jsonObject);
-        JSONObject json = assAdminDao.getAdminId(jsonObject);
-        jsonObject.put("association_id",json.getString("id"));
+        if (!"1".equals(jsonObject.getString("flag"))){
+            JSONObject json = assAdminDao.getAdminId(jsonObject);
+            jsonObject.put("association_id",json.getString("id"));
+        }
+
         int count = stuDao.countKaoqinList(jsonObject);
         List<JSONObject> list = stuDao.selectKaoqinList(jsonObject);
         return CommonUtil.successPage(jsonObject, list, count);

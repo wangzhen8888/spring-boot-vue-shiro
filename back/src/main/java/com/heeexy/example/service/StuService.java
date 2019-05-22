@@ -91,5 +91,12 @@ public interface StuService {
      */
     JSONObject selectKaoqinList(JSONObject jsonObject);
 
+    /**
+     * 更新考勤记录
+     * @param jsonObject
+     * @return
+     */
+    JSONObject updateKaoqinInfo(JSONObject jsonObject);
+
 
 }

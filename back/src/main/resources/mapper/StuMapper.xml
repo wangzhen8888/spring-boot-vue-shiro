@@ -195,11 +195,25 @@ ORDER BY ac.id DESC
     <!--生成考勤记录-->
     <insert id="createKaoQin" parameterType="com.alibaba.fastjson.JSONObject">
 
-        insert into kaoqin (user_name,user_id,association_id,kaoqintype)
-        values ( #{user_name}, #{user_id},#{association_id},#{kaoqintype})
+        insert into kaoqin (user_name,user_id,association_id,kaoqintype,remark)
+        values ( #{user_name}, #{user_id},#{association_id},#{kaoqintype},#{remark})
     </insert>
+    <!--更新考勤记录-->
+    <update id="updateKaoqinInfo" parameterType="com.alibaba.fastjson.JSONObject">
+        UPDATE kaoqin
+        SET
+        <if test="kaoqintype!=null and kaoqintype!=''">
+            kaoqintype=#{kaoqintype},
+        </if>
+        remark=#{remark}
+        <if test="delete_status !=null and delete_status!=''">
+            ,delete_status=#{delete_status}
+        </if>
+        WHERE id = #{id}
+    </update>
     <!--获取当前社团下所有成员的考勤记录-->
-    <select id="selectKaoqinList" parameterType="com.alibaba.fastjson.JSONObject" resultType="com.alibaba.fastjson.JSONObject">
+    <select id="selectKaoqinList" parameterType="com.alibaba.fastjson.JSONObject"
+            resultType="com.alibaba.fastjson.JSONObject">
         SELECT
         k.id,
         k.user_name,
@@ -210,7 +224,11 @@ ORDER BY ac.id DESC
         k.remark,
         date_format(k.create_time, '%Y.%m.%d %T') createTime,
         date_format(k.update_time, '%Y.%m.%d %T') updateTime
-        FROM kaoqin k WHERE k.delete_status=1 AND k.association_id=#{association_id}
+        FROM kaoqin k WHERE k.delete_status=1
+        <if test="association_id!=null and association_id!=''">
+            AND k.association_id=#{association_id}
+        </if>
+
         <if test="kaoqintype!=null and kaoqintype!=''">
             AND k.kaoqintype=#{kaoqintype}
         </if>
@@ -228,7 +246,10 @@ ORDER BY ac.id DESC
     <select id="countKaoqinList" parameterType="com.alibaba.fastjson.JSONObject" resultType="Integer">
         SELECT
         count(0)
-        FROM kaoqin k WHERE k.delete_status=1 AND k.association_id=#{association_id}
+        FROM kaoqin k WHERE k.delete_status=1
+        <if test="association_id!=null and association_id!=''">
+            AND k.association_id=#{association_id}
+        </if>
         <if test="kaoqintype!=null and kaoqintype!=''">
             AND k.kaoqintype=#{kaoqintype}
         </if>

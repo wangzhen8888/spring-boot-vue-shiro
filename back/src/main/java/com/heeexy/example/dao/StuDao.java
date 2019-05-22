@@ -155,4 +155,11 @@ public interface StuDao {
     List<JSONObject> selectKaoqinList(JSONObject jsonObject);
 
     int countKaoqinList(JSONObject jsonObject);
+
+    /**
+     * 更新考勤记录
+     * @param jsonObject
+     * @return
+     */
+    int updateKaoqinInfo(JSONObject jsonObject);
 }

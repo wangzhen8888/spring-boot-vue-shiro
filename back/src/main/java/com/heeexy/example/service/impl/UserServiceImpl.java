@@ -373,4 +373,21 @@ public class UserServiceImpl implements UserService {
         msg.put("code","0");
         return msg;
     }
+
+    /**
+     * 查询角色基本信息
+     * @param jsonObject
+     * @return
+     */
+    @Override
+    public JSONObject getNewUserInfo(JSONObject jsonObject) {
+        JSONObject json=userDao.getNewUserInfo(jsonObject);
+        return CommonUtil.successJson(json);
+    }
+
+    @Override
+    public JSONObject updateNewUser(JSONObject jsonObject) {
+        int num=userDao.updateNewUser(jsonObject);
+        return CommonUtil.successJson(num);
+    }
 }

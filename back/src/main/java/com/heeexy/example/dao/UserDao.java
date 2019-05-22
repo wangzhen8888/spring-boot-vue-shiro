@@ -158,4 +158,18 @@ public interface UserDao {
      * @return
      */
     int removeRoleAllPermission(JSONObject jsonObject);
+
+    /**
+     * 查询角色基本信息
+     * @param jsonObject
+     * @return
+     */
+    JSONObject   getNewUserInfo(JSONObject jsonObject);
+
+    /**
+     * 更新个人基本信息
+     * @param jsonObject
+     * @return
+     */
+    int updateNewUser(JSONObject jsonObject);
 }
